@@ -6,7 +6,7 @@ import FormField from "@/components/molecules/FormField";
 import Select from "@/components/atoms/Select";
 import Label from "@/components/atoms/Label";
 import { studentService } from "@/services/api/studentService";
-
+import { classService } from "@/services/api/classService";
 const StudentForm = ({ student, onSave, onCancel }) => {
 const [formData, setFormData] = useState({
     firstName: "",
@@ -14,11 +14,30 @@ const [formData, setFormData] = useState({
     email: "",
     dateOfBirth: "",
     enrollmentDate: "",
-    status: "active"
+    status: "active",
+    classes: ""
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [classes, setClasses] = useState([]);
+  const [classesLoading, setClassesLoading] = useState(false);
 useEffect(() => {
+    const loadClasses = async () => {
+      setClassesLoading(true);
+      try {
+        const classData = await classService.getAll();
+        setClasses(classData);
+      } catch (error) {
+        console.error("Error loading classes:", error);
+      } finally {
+        setClassesLoading(false);
+      }
+    };
+
+    loadClasses();
+  }, []);
+
+  useEffect(() => {
     if (student) {
       setFormData({
         firstName: student.first_name_c || "",
@@ -26,10 +45,12 @@ useEffect(() => {
         email: student.email_c || "",
         dateOfBirth: student.date_of_birth_c || "",
         enrollmentDate: student.enrollment_date_c || "",
-        status: student.status_c || "active"
+        status: student.status_c || "active",
+        classes: student.classes_c?.Id || ""
       });
     }
   }, [student]);
+
   const validateForm = () => {
     const newErrors = {};
     
@@ -71,13 +92,14 @@ useEffect(() => {
     
 try {
       // Map form data to database field names
-      const studentData = {
+const studentData = {
         first_name_c: formData.firstName,
         last_name_c: formData.lastName,
         email_c: formData.email,
         date_of_birth_c: formData.dateOfBirth,
         enrollment_date_c: formData.enrollmentDate,
-        status_c: formData.status
+        status_c: formData.status,
+        classes_c: formData.classes ? parseInt(formData.classes) : null
       };
       
       let savedStudent;
@@ -164,6 +186,25 @@ try {
             onChange={(e) => handleInputChange("enrollmentDate", e.target.value)}
             error={errors.enrollmentDate}
           />
+        </div>
+<div className="space-y-3">
+          <Label>Classes</Label>
+          <Select
+            value={formData.classes}
+            onChange={(e) => handleInputChange("classes", e.target.value)}
+            disabled={classesLoading}
+          >
+            <option value="">Select a class (optional)</option>
+            {classesLoading ? (
+              <option value="">Loading classes...</option>
+            ) : (
+              classes.map((classItem) => (
+                <option key={classItem.Id} value={classItem.Id}>
+                  {classItem.Name} - {classItem.subject_c}
+                </option>
+              ))
+            )}
+          </Select>
         </div>
 
         <div className="space-y-3">
