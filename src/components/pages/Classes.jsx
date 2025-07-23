@@ -151,8 +151,8 @@ const getClassStudents = (classId) => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredClasses.map((classItem) => {
-            const classStudents = getClassStudents(classItem.Id);
-            const activeStudents = classStudents.filter(s => s.status === "active");
+const classStudents = getClassStudents(classItem.Id);
+            const activeStudents = classStudents.filter(s => s.status_c === "active");
             
             return (
               <Card
@@ -238,10 +238,10 @@ const getClassStudents = (classId) => {
                           <div
                             key={student.Id}
                             className="inline-block w-8 h-8 rounded-full bg-gradient-to-br from-primary-600 to-primary-700 border-2 border-white flex items-center justify-center"
-                            title={`${student.firstName} ${student.lastName}`}
+title={`${student.first_name_c} ${student.last_name_c}`}
                           >
                             <span className="text-white text-xs font-medium">
-                              {student.firstName.charAt(0)}{student.lastName.charAt(0)}
+                              {student.first_name_c?.charAt(0)}{student.last_name_c?.charAt(0)}
                             </span>
                           </div>
                         ))}
