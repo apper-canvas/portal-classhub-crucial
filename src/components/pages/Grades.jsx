@@ -1,18 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import Button from "@/components/atoms/Button";
-import Card from "@/components/atoms/Card";
-import Select from "@/components/atoms/Select";
-import Label from "@/components/atoms/Label";
+import { useNotifications } from "@/contexts/NotificationContext";
+import { assignmentService } from "@/services/api/assignmentService";
+import { studentService } from "@/services/api/studentService";
+import { gradeService } from "@/services/api/gradeService";
+import { classService } from "@/services/api/classService";
+import ApperIcon from "@/components/ApperIcon";
 import GradeGrid from "@/components/organisms/GradeGrid";
-import Loading from "@/components/ui/Loading";
+import Label from "@/components/atoms/Label";
+import Select from "@/components/atoms/Select";
+import Card from "@/components/atoms/Card";
+import Button from "@/components/atoms/Button";
 import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
-import { classService } from "@/services/api/classService";
-import { studentService } from "@/services/api/studentService";
-import { assignmentService } from "@/services/api/assignmentService";
-import { gradeService } from "@/services/api/gradeService";
-
+import Loading from "@/components/ui/Loading";
 const Grades = () => {
   const [classes, setClasses] = useState([]);
   const [students, setStudents] = useState([]);
@@ -26,8 +27,12 @@ const Grades = () => {
     dueDate: "",
     totalPoints: "",
     category: "Homework"
-  });
-
+});
+  const [showReminderModal, setShowReminderModal] = useState(false);
+  const [selectedAssignmentForReminder, setSelectedAssignmentForReminder] = useState(null);
+  const [showBulkReminderModal, setShowBulkReminderModal] = useState(false);
+  const [reminderDays, setReminderDays] = useState(3);
+  const { addNotification } = useNotifications();
   useEffect(() => {
     loadInitialData();
   }, []);
@@ -107,8 +112,63 @@ const Grades = () => {
   const handleGradeUpdate = () => {
     // This function is called when grades are updated
     // You could add any additional logic here if needed
+};
+
+  const handleSetReminder = async (assignment) => {
+    setSelectedAssignmentForReminder(assignment);
+    setShowReminderModal(true);
   };
 
+  const handleCreateReminder = async () => {
+    if (!selectedAssignmentForReminder) return;
+
+    try {
+      await addNotification({
+        type: 'assignment_reminder',
+        title: 'Assignment Reminder Set',
+        message: `Reminder set for "${selectedAssignmentForReminder.name}" due ${selectedAssignmentForReminder.dueDate}`,
+        assignmentId: selectedAssignmentForReminder.Id,
+        priority: 'medium'
+      });
+
+      toast.success('Reminder set successfully');
+      setShowReminderModal(false);
+      setSelectedAssignmentForReminder(null);
+    } catch (error) {
+      toast.error('Error setting reminder');
+      console.error('Error creating reminder:', error);
+    }
+  };
+
+  const handleBulkReminders = async () => {
+    if (!selectedClass) return;
+
+    try {
+      const upcomingAssignments = assignments.filter(assignment => {
+        if (!assignment.dueDate) return false;
+        const dueDate = new Date(assignment.dueDate);
+        const cutoffDate = new Date();
+        cutoffDate.setDate(cutoffDate.getDate() + reminderDays);
+        return dueDate <= cutoffDate && dueDate >= new Date();
+      });
+
+      for (const assignment of upcomingAssignments) {
+        await addNotification({
+          type: 'assignment_reminder',
+          title: 'Bulk Reminder Set',
+          message: `Reminder set for "${assignment.name}" due ${assignment.dueDate}`,
+          assignmentId: assignment.Id,
+          priority: 'medium'
+        });
+      }
+
+      toast.success(`Reminders set for ${upcomingAssignments.length} assignments`);
+      setShowBulkReminderModal(false);
+    } catch (error) {
+      toast.error('Error setting bulk reminders');
+      console.error('Error creating bulk reminders:', error);
+    }
+  };
   if (loading) {
     return <Loading />;
   }
@@ -143,7 +203,7 @@ const Grades = () => {
             Manage assignments and enter grades for your classes
           </p>
         </div>
-        <div className="flex items-center space-x-3">
+<div className="flex items-center space-x-3">
           <Button
             variant="outline"
             icon="Plus"
@@ -151,6 +211,14 @@ const Grades = () => {
             disabled={!selectedClass}
           >
             Add Assignment
+          </Button>
+          <Button
+            variant="outline"
+            icon="Bell"
+            onClick={() => setShowBulkReminderModal(true)}
+            disabled={!selectedClass || assignments.length === 0}
+          >
+            Set Reminders
           </Button>
           <Button
             icon="Download"
@@ -273,6 +341,164 @@ const Grades = () => {
             </div>
           </form>
         </Card>
+)}
+      {/* Assignment Reminders */}
+      {selectedClass && assignments.length > 0 && (
+        <Card className="p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-primary-900">Assignment Deadlines</h3>
+            <Button
+              variant="outline"
+              size="sm"
+              icon="Bell"
+              onClick={() => setShowBulkReminderModal(true)}
+            >
+              Set All Reminders
+            </Button>
+          </div>
+          
+          <div className="space-y-3">
+            {assignments
+              .filter(a => a.dueDate)
+              .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
+              .slice(0, 5)
+              .map((assignment) => {
+                const dueDate = new Date(assignment.dueDate);
+                const today = new Date();
+                const daysUntilDue = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
+                
+                return (
+                  <div key={assignment.Id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <div className={`p-2 rounded-full ${
+                        daysUntilDue <= 1 ? 'bg-error text-white' :
+                        daysUntilDue <= 3 ? 'bg-warning text-white' :
+                        'bg-info text-white'
+                      }`}>
+                        <ApperIcon name="Clock" size={14} />
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-primary-900">{assignment.name}</h4>
+                        <p className="text-sm text-secondary-400">
+                          Due: {dueDate.toLocaleDateString()} 
+                          {daysUntilDue === 0 ? ' (Today)' :
+                           daysUntilDue === 1 ? ' (Tomorrow)' :
+                           daysUntilDue < 0 ? ` (${Math.abs(daysUntilDue)} days overdue)` :
+                           ` (${daysUntilDue} days)`}
+                        </p>
+                      </div>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      icon="Bell"
+                      onClick={() => handleSetReminder(assignment)}
+                    >
+                      Set Reminder
+                    </Button>
+                  </div>
+                );
+              })}
+            
+            {assignments.filter(a => a.dueDate).length === 0 && (
+              <p className="text-secondary-400 text-center py-4">
+                No assignments with due dates yet. Add due dates to track deadlines.
+              </p>
+            )}
+          </div>
+        </Card>
+      )}
+
+      {/* Reminder Modal */}
+      {showReminderModal && selectedAssignmentForReminder && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-primary-900">Set Reminder</h3>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowReminderModal(false)}
+                >
+                  <ApperIcon name="X" size={16} />
+                </Button>
+              </div>
+              
+              <div className="mb-6">
+                <p className="text-secondary-400 mb-2">Assignment:</p>
+                <p className="font-medium text-primary-900">{selectedAssignmentForReminder.name}</p>
+                <p className="text-sm text-secondary-400">
+                  Due: {new Date(selectedAssignmentForReminder.dueDate).toLocaleDateString()}
+                </p>
+              </div>
+              
+              <div className="flex justify-end space-x-3">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowReminderModal(false)}
+                >
+                  Cancel
+                </Button>
+                <Button onClick={handleCreateReminder} icon="Bell">
+                  Set Reminder
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Bulk Reminder Modal */}
+      {showBulkReminderModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-primary-900">Set Bulk Reminders</h3>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowBulkReminderModal(false)}
+                >
+                  <ApperIcon name="X" size={16} />
+                </Button>
+              </div>
+              
+              <div className="mb-6">
+                <Label htmlFor="reminderDays">Remind me for assignments due within:</Label>
+                <Select
+                  id="reminderDays"
+                  value={reminderDays}
+                  onChange={(e) => setReminderDays(parseInt(e.target.value))}
+                  className="mt-2"
+                >
+                  <option value={1}>1 day</option>
+                  <option value={2}>2 days</option>
+                  <option value={3}>3 days</option>
+                  <option value={7}>1 week</option>
+                  <option value={14}>2 weeks</option>
+                </Select>
+                
+                <p className="text-sm text-secondary-400 mt-2">
+                  This will set reminders for all assignments in this class due within the selected timeframe.
+                </p>
+              </div>
+              
+              <div className="flex justify-end space-x-3">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowBulkReminderModal(false)}
+                >
+                  Cancel
+                </Button>
+                <Button onClick={handleBulkReminders} icon="Bell">
+                  Set Reminders
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Grades Grid */}
@@ -302,7 +528,6 @@ const Grades = () => {
           }}
         />
       )}
-    </div>
   );
 };
 
