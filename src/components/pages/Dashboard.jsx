@@ -7,7 +7,7 @@ import Card from "@/components/atoms/Card";
 import Badge from "@/components/atoms/Badge";
 import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
-import ApperIcon from "@/components/atoms/ApperIcon";
+import ApperIcon from "@/components/ApperIcon";
 import { studentService } from "@/services/api/studentService";
 import { classService } from "@/services/api/classService";
 import { gradeService } from "@/services/api/gradeService";
