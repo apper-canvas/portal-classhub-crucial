@@ -29,12 +29,27 @@ const Students = () => {
     filterAndSortStudents();
   }, [students, searchQuery, sortField, sortDirection]);
 
-  const loadStudents = async () => {
+const loadStudents = async () => {
     try {
       setLoading(true);
       setError(null);
       const data = await studentService.getAll();
-      setStudents(data);
+      
+      // Map mock data field names to database field names
+      const mappedData = data.map(student => ({
+        ...student,
+        first_name_c: student.firstName || student.first_name_c,
+        last_name_c: student.lastName || student.last_name_c,
+        email_c: student.email || student.email_c,
+        date_of_birth_c: student.dateOfBirth || student.date_of_birth_c,
+        enrollment_date_c: student.enrollmentDate || student.enrollment_date_c,
+        status_c: student.status || student.status_c,
+        class_ids_c: Array.isArray(student.classIds) 
+          ? student.classIds.join(',') 
+          : (student.class_ids_c || '')
+      }));
+      
+      setStudents(mappedData);
     } catch (err) {
       setError(err.message);
       console.error("Error loading students:", err);
