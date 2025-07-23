@@ -10,15 +10,17 @@ import SearchBar from "@/components/molecules/SearchBar";
 import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
 import Loading from "@/components/ui/Loading";
+import ClassForm from "@/components/organisms/ClassForm";
 
 const Classes = () => {
-  const [classes, setClasses] = useState([]);
+const [classes, setClasses] = useState([]);
   const [filteredClasses, setFilteredClasses] = useState([]);
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-
+  const [showForm, setShowForm] = useState(false);
+  const [selectedClass, setSelectedClass] = useState(null);
   useEffect(() => {
     loadData();
   }, []);
@@ -57,14 +59,31 @@ if (searchQuery.trim()) {
         cls.room_c?.toLowerCase().includes(query)
       );
     }
+setFilteredClasses(filtered);
+  };
 
-    setFilteredClasses(filtered);
+  const handleSaveClass = async (savedClass) => {
+    if (selectedClass) {
+      // Update existing class
+      setClasses(prev => prev.map(cls => cls.Id === savedClass.Id ? savedClass : cls));
+      toast.success("Class updated successfully");
+    } else {
+      // Add new class
+      setClasses(prev => [...prev, savedClass]);
+      toast.success("Class created successfully");
+    }
+    setShowForm(false);
+    setSelectedClass(null);
+  };
+
+  const handleEditClass = (classItem) => {
+    setSelectedClass(classItem);
+    setShowForm(true);
   };
 
 const getClassStudents = (classId) => {
     return students.filter(student => student.class_ids_c?.split(',').map(id => parseInt(id.trim())).includes(classId));
   };
-
   const getSubjectIcon = (subject) => {
     const icons = {
       "Mathematics": "Calculator",
@@ -113,11 +132,11 @@ const getClassStudents = (classId) => {
             Manage your classes and view enrollment information
           </p>
         </div>
-        <Button
+<Button
           icon="Plus"
           size="lg"
           className="shadow-lg"
-          onClick={() => toast.info("Add class functionality coming soon!")}
+          onClick={() => setShowForm(true)}
         >
           Add Class
         </Button>
@@ -145,8 +164,8 @@ const getClassStudents = (classId) => {
               : "You haven't set up any classes yet. Create your first class to get started."
           }
           icon="BookOpen"
-          actionLabel="Add First Class"
-          onAction={() => toast.info("Add class functionality coming soon!")}
+actionLabel="Add First Class"
+          onAction={() => setShowForm(true)}
         />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -297,7 +316,22 @@ title={`${student.first_name_c} ${student.last_name_c}`}
                 )}
               </div>
               <div className="text-sm text-secondary-400">Avg. Class Size</div>
-            </div>
+</div>
+          </div>
+        </div>
+      )}
+
+      {showForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <ClassForm
+              classItem={selectedClass}
+              onSave={handleSaveClass}
+              onCancel={() => {
+                setShowForm(false);
+                setSelectedClass(null);
+              }}
+            />
           </div>
         </div>
       )}
