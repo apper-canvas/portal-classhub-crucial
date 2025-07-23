@@ -525,10 +525,11 @@ Export Grades
               toast.info("Navigate to Students page to manage class enrollment");
             } else {
               setShowAddAssignment(true);
-            }
+}
           }}
         />
       )}
+    </div>
   );
 };
 
