@@ -71,13 +71,13 @@ const Attendance = () => {
       const dateString = selectedDate.toISOString().split("T")[0];
       const classId = parseInt(selectedClass);
       
-      // Mark all students with the selected status
+// Mark all students with the selected status
       const promises = students.map(student => 
         attendanceService.create({
-          studentId: student.Id,
-          classId,
-          date: dateString,
-          status
+          student_id_c: student.Id,
+          class_id_c: classId,
+          date_c: dateString,
+          status_c: status
         })
       );
       
@@ -147,16 +147,16 @@ const Attendance = () => {
               onChange={(e) => setSelectedClass(e.target.value)}
             >
               <option value="">Choose a class...</option>
-              {classes.map((cls) => (
+{classes.map((cls) => (
                 <option key={cls.Id} value={cls.Id}>
-                  {cls.name} - {cls.subject} ({cls.period})
+                  {cls.Name} - {cls.subject_c} ({cls.period_c})
                 </option>
               ))}
             </Select>
             
-            {selectedClassData && (
+{selectedClassData && (
               <div className="mt-2 text-sm text-secondary-400">
-                {students.length} active students • Room {selectedClassData.room}
+                {students.length} active students • Room {selectedClassData.room_c}
               </div>
             )}
           </div>

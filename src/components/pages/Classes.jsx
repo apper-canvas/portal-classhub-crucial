@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import Button from "@/components/atoms/Button";
-import Card from "@/components/atoms/Card";
+import { studentService } from "@/services/api/studentService";
+import { classService } from "@/services/api/classService";
+import ApperIcon from "@/components/ApperIcon";
 import Badge from "@/components/atoms/Badge";
+import Card from "@/components/atoms/Card";
+import Button from "@/components/atoms/Button";
 import SearchBar from "@/components/molecules/SearchBar";
-import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
-import ApperIcon from "@/components/ApperIcon";
-import { classService } from "@/services/api/classService";
-import { studentService } from "@/services/api/studentService";
+import Loading from "@/components/ui/Loading";
 
 const Classes = () => {
   const [classes, setClasses] = useState([]);
@@ -48,21 +48,21 @@ const Classes = () => {
   const filterClasses = () => {
     let filtered = [...classes];
 
-    if (searchQuery.trim()) {
+if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(cls =>
-        cls.name.toLowerCase().includes(query) ||
-        cls.subject.toLowerCase().includes(query) ||
-        cls.period.toLowerCase().includes(query) ||
-        cls.room.toLowerCase().includes(query)
+        cls.Name?.toLowerCase().includes(query) ||
+        cls.subject_c?.toLowerCase().includes(query) ||
+        cls.period_c?.toLowerCase().includes(query) ||
+        cls.room_c?.toLowerCase().includes(query)
       );
     }
 
     setFilteredClasses(filtered);
   };
 
-  const getClassStudents = (classId) => {
-    return students.filter(student => student.classIds?.includes(classId));
+const getClassStudents = (classId) => {
+    return students.filter(student => student.class_ids_c?.split(',').map(id => parseInt(id.trim())).includes(classId));
   };
 
   const getSubjectIcon = (subject) => {
@@ -159,29 +159,29 @@ const Classes = () => {
                 key={classItem.Id}
                 className="p-6 hover:shadow-xl transition-all duration-300 cursor-pointer group"
                 variant="elevated"
-              >
+>
                 {/* Class Header */}
                 <div className="flex items-start justify-between mb-4">
-                  <div className={`p-3 rounded-full bg-gradient-to-br ${getSubjectColor(classItem.subject)} group-hover:scale-110 transition-transform duration-200`}>
+                  <div className={`p-3 rounded-full bg-gradient-to-br ${getSubjectColor(classItem.subject_c)} group-hover:scale-110 transition-transform duration-200`}>
                     <ApperIcon 
-                      name={getSubjectIcon(classItem.subject)} 
+                      name={getSubjectIcon(classItem.subject_c)} 
                       className="w-6 h-6 text-white" 
                     />
                   </div>
                   <Badge variant="info" className="text-xs">
-                    {classItem.period}
+                    {classItem.period_c}
                   </Badge>
                 </div>
 
                 {/* Class Info */}
                 <div className="mb-4">
                   <h3 className="text-xl font-bold text-primary-900 mb-1 group-hover:text-primary-700 transition-colors">
-                    {classItem.name}
+                    {classItem.Name}
                   </h3>
-                  <p className="text-secondary-400 text-sm mb-2">{classItem.subject}</p>
+                  <p className="text-secondary-400 text-sm mb-2">{classItem.subject_c}</p>
                   <div className="flex items-center text-secondary-400 text-sm">
                     <ApperIcon name="MapPin" className="w-4 h-4 mr-1" />
-                    {classItem.room}
+                    {classItem.room_c}
                   </div>
                 </div>
 
@@ -189,7 +189,7 @@ const Classes = () => {
                 <div className="space-y-3 mb-6">
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-secondary-400">Total Enrolled</span>
-                    <span className="font-semibold text-primary-900">{classStudents.length}</span>
+<span className="font-semibold text-primary-900">{classStudents.length}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-secondary-400">Active Students</span>
@@ -274,10 +274,10 @@ const Classes = () => {
                 {filteredClasses.length}
               </div>
               <div className="text-sm text-secondary-400">Total Classes</div>
-            </div>
+</div>
             <div className="text-center">
               <div className="text-2xl font-bold text-primary-900 mb-1">
-                {new Set(filteredClasses.map(c => c.subject)).size}
+                {new Set(filteredClasses.map(c => c.subject_c)).size}
               </div>
               <div className="text-sm text-secondary-400">Subjects</div>
             </div>

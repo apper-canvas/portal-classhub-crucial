@@ -88,10 +88,12 @@ const Grades = () => {
     }
     
     try {
-      const assignment = await assignmentService.create({
-        ...newAssignment,
-        classId: parseInt(selectedClass),
-        totalPoints: parseInt(newAssignment.totalPoints)
+const assignment = await assignmentService.create({
+        Name: newAssignment.name,
+        due_date_c: newAssignment.dueDate,
+        total_points_c: parseInt(newAssignment.totalPoints),
+        category_c: newAssignment.category,
+        class_id_c: parseInt(selectedClass)
       });
       
       setAssignments(prev => [...prev, assignment]);
@@ -240,9 +242,9 @@ Export Grades
               onChange={(e) => setSelectedClass(e.target.value)}
             >
               <option value="">Choose a class...</option>
-              {classes.map((cls) => (
+{classes.map((cls) => (
                 <option key={cls.Id} value={cls.Id}>
-                  {cls.name} - {cls.subject} ({cls.period})
+                  {cls.Name} - {cls.subject_c} ({cls.period_c})
                 </option>
               ))}
             </Select>
@@ -256,8 +258,8 @@ Export Grades
               <div>
                 <span className="font-medium">{assignments.length}</span> assignments
               </div>
-              <div>
-                Room {selectedClassData.room}
+<div>
+                Room {selectedClassData.room_c}
               </div>
             </div>
           )}

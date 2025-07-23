@@ -49,10 +49,10 @@ const Students = () => {
     // Apply search filter
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(student =>
-        student.firstName.toLowerCase().includes(query) ||
-        student.lastName.toLowerCase().includes(query) ||
-        student.email.toLowerCase().includes(query)
+filtered = filtered.filter(student =>
+        student.first_name_c?.toLowerCase().includes(query) ||
+        student.last_name_c?.toLowerCase().includes(query) ||
+        student.email_c?.toLowerCase().includes(query)
       );
     }
 
@@ -61,21 +61,21 @@ const Students = () => {
       let aValue, bValue;
       
       switch (sortField) {
-        case "name":
-          aValue = `${a.firstName} ${a.lastName}`.toLowerCase();
-          bValue = `${b.firstName} ${b.lastName}`.toLowerCase();
+case "name":
+          aValue = `${a.first_name_c} ${a.last_name_c}`.toLowerCase();
+          bValue = `${b.first_name_c} ${b.last_name_c}`.toLowerCase();
           break;
-        case "email":
-          aValue = a.email.toLowerCase();
-          bValue = b.email.toLowerCase();
+case "email":
+          aValue = a.email_c?.toLowerCase() || '';
+          bValue = b.email_c?.toLowerCase() || '';
           break;
-        case "enrollmentDate":
-          aValue = new Date(a.enrollmentDate);
-          bValue = new Date(b.enrollmentDate);
+case "enrollmentDate":
+          aValue = new Date(a.enrollment_date_c);
+          bValue = new Date(b.enrollment_date_c);
           break;
-        case "status":
-          aValue = a.status;
-          bValue = b.status;
+case "status":
+          aValue = a.status_c;
+          bValue = b.status_c;
           break;
         default:
           aValue = a[sortField];

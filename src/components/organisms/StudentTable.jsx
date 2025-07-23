@@ -25,8 +25,8 @@ const StudentTable = ({
     { key: "actions", label: "Actions", sortable: false }
   ];
 
-  const handleDelete = (student) => {
-    if (window.confirm(`Are you sure you want to delete ${student.firstName} ${student.lastName}?`)) {
+const handleDelete = (student) => {
+    if (window.confirm(`Are you sure you want to delete ${student.first_name_c} ${student.last_name_c}?`)) {
       onDelete(student.Id);
       toast.success("Student deleted successfully");
     }
@@ -74,14 +74,14 @@ const StudentTable = ({
                   <div className="flex items-center">
                     <div className="flex-shrink-0 h-10 w-10">
                       <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary-600 to-primary-700 flex items-center justify-center">
-                        <span className="text-white font-medium text-sm">
-                          {student.firstName.charAt(0)}{student.lastName.charAt(0)}
+<span className="text-white font-medium text-sm">
+                          {student.first_name_c?.charAt(0)}{student.last_name_c?.charAt(0)}
                         </span>
                       </div>
                     </div>
                     <div className="ml-4">
-                      <div className="text-sm font-medium text-primary-900">
-                        {student.firstName} {student.lastName}
+<div className="text-sm font-medium text-primary-900">
+                        {student.first_name_c} {student.last_name_c}
                       </div>
                       <div className="text-sm text-secondary-400">
                         Student #{student.Id}
@@ -89,22 +89,22 @@ const StudentTable = ({
                     </div>
                   </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-primary-900">{student.email}</div>
+<td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm text-primary-900">{student.email_c}</div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+<td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-primary-900">
-                    {format(new Date(student.enrollmentDate), "MMM dd, yyyy")}
+                    {format(new Date(student.enrollment_date_c), "MMM dd, yyyy")}
                   </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+<td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-primary-900">
-                    {student.classIds?.length || 0} classes
+                    {student.class_ids_c?.split(',').length || 0} classes
                   </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <Badge variant={student.status === "active" ? "success" : "secondary"}>
-                    {student.status}
+<td className="px-6 py-4 whitespace-nowrap">
+                  <Badge variant={student.status_c === "active" ? "success" : "secondary"}>
+                    {student.status_c}
                   </Badge>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

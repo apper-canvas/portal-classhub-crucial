@@ -28,8 +28,8 @@ const GradeGrid = ({ students, assignments, classId, onGradeUpdate }) => {
     }
   };
 
-  const getGrade = (studentId, assignmentId) => {
-    return grades.find(g => g.studentId === studentId && g.assignmentId === assignmentId);
+const getGrade = (studentId, assignmentId) => {
+    return grades.find(g => g.student_id_c === studentId && g.assignment_id_c === assignmentId);
   };
 
   const handleGradeChange = async (studentId, assignmentId, score) => {
@@ -40,22 +40,22 @@ const GradeGrid = ({ students, assignments, classId, onGradeUpdate }) => {
       let updatedGrade;
       
       if (existingGrade) {
-        updatedGrade = await gradeService.update(existingGrade.Id, {
+updatedGrade = await gradeService.update(existingGrade.Id, {
           ...existingGrade,
-          score,
-          submittedDate: new Date().toISOString().split("T")[0]
+          score_c: score,
+          submitted_date_c: new Date().toISOString().split("T")[0]
         });
       } else {
         updatedGrade = await gradeService.create({
-          studentId,
-          assignmentId,
-          score,
-          submittedDate: new Date().toISOString().split("T")[0]
+          student_id_c: studentId,
+          assignment_id_c: assignmentId,
+          score_c: score,
+          submitted_date_c: new Date().toISOString().split("T")[0]
         });
       }
       
-      setGrades(prev => {
-        const filtered = prev.filter(g => !(g.studentId === studentId && g.assignmentId === assignmentId));
+setGrades(prev => {
+        const filtered = prev.filter(g => !(g.student_id_c === studentId && g.assignment_id_c === assignmentId));
         return [...filtered, updatedGrade];
       });
       
@@ -72,17 +72,16 @@ const GradeGrid = ({ students, assignments, classId, onGradeUpdate }) => {
     }
   };
 
-  const calculateStudentAverage = (studentId) => {
-    const studentGrades = grades.filter(g => g.studentId === studentId && g.score !== null);
+const calculateStudentAverage = (studentId) => {
+    const studentGrades = grades.filter(g => g.student_id_c === studentId && g.score_c !== null);
     if (studentGrades.length === 0) return 0;
     
     const totalPoints = studentGrades.reduce((sum, grade) => {
-      const assignment = assignments.find(a => a.Id === grade.assignmentId);
-      return sum + (assignment ? assignment.totalPoints : 0);
+      const assignment = assignments.find(a => a.Id === grade.assignment_id_c);
+      return sum + (assignment ? assignment.total_points_c : 0);
     }, 0);
     
-    const earnedPoints = studentGrades.reduce((sum, grade) => sum + grade.score, 0);
-    
+    const earnedPoints = studentGrades.reduce((sum, grade) => sum + grade.score_c, 0);
     return totalPoints > 0 ? Math.round((earnedPoints / totalPoints) * 100) : 0;
   };
 
@@ -131,13 +130,13 @@ const GradeGrid = ({ students, assignments, classId, onGradeUpdate }) => {
           <div className="bg-gradient-to-r from-primary-50 to-primary-100 border-b border-gray-200">
             <div className="flex">
               <div className="w-64 px-6 py-4 font-semibold text-primary-900">Student</div>
-              {assignments.map(assignment => (
+{assignments.map(assignment => (
                 <div key={assignment.Id} className="w-24 px-2 py-4 text-center">
-                  <div className="font-semibold text-primary-900 text-sm truncate" title={assignment.name}>
-                    {assignment.name}
+                  <div className="font-semibold text-primary-900 text-sm truncate" title={assignment.Name}>
+                    {assignment.Name}
                   </div>
                   <div className="text-xs text-secondary-400 mt-1">
-                    {assignment.totalPoints}pts
+                    {assignment.total_points_c}pts
                   </div>
                 </div>
               ))}
@@ -162,14 +161,14 @@ const GradeGrid = ({ students, assignments, classId, onGradeUpdate }) => {
                 >
                   <div className="w-64 px-6 py-4 flex items-center">
                     <div className="flex items-center">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-600 to-primary-700 flex items-center justify-center mr-3">
+<div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-600 to-primary-700 flex items-center justify-center mr-3">
                         <span className="text-white text-xs font-medium">
-                          {student.firstName.charAt(0)}{student.lastName.charAt(0)}
+                          {student.first_name_c?.charAt(0)}{student.last_name_c?.charAt(0)}
                         </span>
                       </div>
-                      <div>
+<div>
                         <div className="font-medium text-primary-900">
-                          {student.firstName} {student.lastName}
+                          {student.first_name_c} {student.last_name_c}
                         </div>
                         <div className="text-xs text-secondary-400">
                           ID: {student.Id}
@@ -181,10 +180,10 @@ const GradeGrid = ({ students, assignments, classId, onGradeUpdate }) => {
                   {assignments.map(assignment => {
                     const grade = getGrade(student.Id, assignment.Id);
                     return (
-                      <div key={assignment.Id} className="w-24 px-2 py-4 flex items-center justify-center">
+<div key={assignment.Id} className="w-24 px-2 py-4 flex items-center justify-center">
                         <GradeCell
-                          score={grade?.score || null}
-                          totalPoints={assignment.totalPoints}
+                          score={grade?.score_c || null}
+                          totalPoints={assignment.total_points_c}
                           editable={true}
                           onChange={(score) => handleGradeChange(student.Id, assignment.Id, score)}
                         />

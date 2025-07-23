@@ -1,27 +1,17 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { createContext, useEffect, useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import { Provider } from 'react-redux';
 import { ToastContainer } from "react-toastify";
-import Layout from "@/components/organisms/Layout";
-import Dashboard from "@/components/pages/Dashboard";
-import Students from "@/components/pages/Students";
-import Classes from "@/components/pages/Classes";
-import Grades from "@/components/pages/Grades";
-import Attendance from "@/components/pages/Attendance";
+import { store } from '@/store/store';
+import AppContent from '@/components/AppContent';
+
+export const AuthContext = createContext(null);
 
 function App() {
   return (
-    <Router>
-      <div className="App">
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="students" element={<Students />} />
-            <Route path="classes" element={<Classes />} />
-            <Route path="grades" element={<Grades />} />
-            <Route path="attendance" element={<Attendance />} />
-          </Route>
-        </Routes>
-        
+    <Provider store={store}>
+      <Router>
+        <AppContent />
         <ToastContainer
           position="top-right"
           autoClose={3000}
@@ -34,8 +24,8 @@ function App() {
           pauseOnHover
           style={{ zIndex: 9999 }}
         />
-      </div>
-    </Router>
+      </Router>
+    </Provider>
   );
 }
 

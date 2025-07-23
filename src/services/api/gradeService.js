@@ -1,75 +1,270 @@
-import gradesData from "@/services/mockData/grades.json";
-
 class GradeService {
   constructor() {
-    this.grades = [...gradesData];
-  }
-
-  delay(ms = 300) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    const { ApperClient } = window.ApperSDK;
+    this.apperClient = new ApperClient({
+      apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+      apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+    });
+    this.tableName = 'grade_c';
   }
 
   async getAll() {
-    await this.delay();
-    return [...this.grades];
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "Tags" } },
+          { field: { Name: "Owner" } },
+          { field: { Name: "student_id_c" } },
+          { field: { Name: "assignment_id_c" } },
+          { field: { Name: "score_c" } },
+          { field: { Name: "submitted_date_c" } }
+        ]
+      };
+      
+      const response = await this.apperClient.fetchRecords(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+      
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching grades:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return [];
+    }
   }
 
   async getById(id) {
-    await this.delay();
-    const grade = this.grades.find(g => g.Id === id);
-    if (!grade) {
-      throw new Error("Grade not found");
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "Tags" } },
+          { field: { Name: "Owner" } },
+          { field: { Name: "student_id_c" } },
+          { field: { Name: "assignment_id_c" } },
+          { field: { Name: "score_c" } },
+          { field: { Name: "submitted_date_c" } }
+        ]
+      };
+      
+      const response = await this.apperClient.getRecordById(this.tableName, id, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return null;
+      }
+      
+      return response.data;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error(`Error fetching grade with ID ${id}:`, error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return null;
     }
-    return { ...grade };
   }
 
   async getByStudentId(studentId) {
-    await this.delay();
-    return this.grades.filter(g => g.studentId === studentId).map(g => ({ ...g }));
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "Tags" } },
+          { field: { Name: "Owner" } },
+          { field: { Name: "student_id_c" } },
+          { field: { Name: "assignment_id_c" } },
+          { field: { Name: "score_c" } },
+          { field: { Name: "submitted_date_c" } }
+        ],
+        where: [
+          {
+            FieldName: "student_id_c",
+            Operator: "EqualTo",
+            Values: [parseInt(studentId)]
+          }
+        ]
+      };
+      
+      const response = await this.apperClient.fetchRecords(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+      
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching grades by student:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return [];
+    }
   }
 
   async getByAssignmentId(assignmentId) {
-    await this.delay();
-    return this.grades.filter(g => g.assignmentId === assignmentId).map(g => ({ ...g }));
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "Tags" } },
+          { field: { Name: "Owner" } },
+          { field: { Name: "student_id_c" } },
+          { field: { Name: "assignment_id_c" } },
+          { field: { Name: "score_c" } },
+          { field: { Name: "submitted_date_c" } }
+        ],
+        where: [
+          {
+            FieldName: "assignment_id_c",
+            Operator: "EqualTo",
+            Values: [parseInt(assignmentId)]
+          }
+        ]
+      };
+      
+      const response = await this.apperClient.fetchRecords(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+      
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching grades by assignment:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return [];
+    }
   }
 
   async create(gradeData) {
-    await this.delay();
-    const maxId = Math.max(...this.grades.map(g => g.Id), 0);
-    const newGrade = {
-      ...gradeData,
-      Id: maxId + 1
-    };
-    this.grades.push(newGrade);
-    return { ...newGrade };
+    try {
+      const params = {
+        records: [{
+          Name: gradeData.Name || `Grade for Student ${gradeData.student_id_c || gradeData.studentId}`,
+          Tags: gradeData.Tags || "",
+          Owner: parseInt(gradeData.Owner) || null,
+          student_id_c: parseInt(gradeData.student_id_c || gradeData.studentId),
+          assignment_id_c: parseInt(gradeData.assignment_id_c || gradeData.assignmentId),
+          score_c: parseInt(gradeData.score_c || gradeData.score),
+          submitted_date_c: gradeData.submitted_date_c || gradeData.submittedDate
+        }]
+      };
+      
+      const response = await this.apperClient.createRecord(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return null;
+      }
+      
+      if (response.results) {
+        const successfulRecords = response.results.filter(result => result.success);
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to create grade records:${JSON.stringify(failedRecords)}`);
+        }
+        
+        return successfulRecords.length > 0 ? successfulRecords[0].data : null;
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error creating grade:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return null;
+    }
   }
 
   async update(id, gradeData) {
-    await this.delay();
-    const index = this.grades.findIndex(g => g.Id === id);
-    if (index === -1) {
-      throw new Error("Grade not found");
+    try {
+      const params = {
+        records: [{
+          Id: id,
+          Name: gradeData.Name || `Grade for Student ${gradeData.student_id_c || gradeData.studentId}`,
+          Tags: gradeData.Tags,
+          Owner: gradeData.Owner ? parseInt(gradeData.Owner) : null,
+          student_id_c: parseInt(gradeData.student_id_c || gradeData.studentId),
+          assignment_id_c: parseInt(gradeData.assignment_id_c || gradeData.assignmentId),
+          score_c: parseInt(gradeData.score_c || gradeData.score),
+          submitted_date_c: gradeData.submitted_date_c || gradeData.submittedDate
+        }]
+      };
+      
+      const response = await this.apperClient.updateRecord(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return null;
+      }
+      
+      if (response.results) {
+        const successfulUpdates = response.results.filter(result => result.success);
+        const failedUpdates = response.results.filter(result => !result.success);
+        
+        if (failedUpdates.length > 0) {
+          console.error(`Failed to update grade records:${JSON.stringify(failedUpdates)}`);
+        }
+        
+        return successfulUpdates.length > 0 ? successfulUpdates[0].data : null;
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error updating grade:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return null;
     }
-    
-    const updatedGrade = {
-      ...this.grades[index],
-      ...gradeData,
-      Id: id
-    };
-    
-    this.grades[index] = updatedGrade;
-    return { ...updatedGrade };
   }
 
   async delete(id) {
-    await this.delay();
-    const index = this.grades.findIndex(g => g.Id === id);
-    if (index === -1) {
-      throw new Error("Grade not found");
+    try {
+      const params = {
+        RecordIds: [id]
+      };
+      
+      const response = await this.apperClient.deleteRecord(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return false;
+      }
+      
+      if (response.results) {
+        const failedDeletions = response.results.filter(result => !result.success);
+        
+        if (failedDeletions.length > 0) {
+          console.error(`Failed to delete grade records:${JSON.stringify(failedDeletions)}`);
+        }
+        
+        return failedDeletions.length === 0;
+      }
+      
+      return true;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error deleting grade:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return false;
     }
-    
-    const deletedGrade = this.grades.splice(index, 1)[0];
-    return { ...deletedGrade };
   }
 }
 

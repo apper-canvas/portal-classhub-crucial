@@ -2,6 +2,9 @@ class NotificationService {
   constructor() {
     this.storageKey = 'classhub_notifications';
     this.notifications = this.loadFromStorage();
+    this.maxId = this.notifications.length > 0 
+      ? Math.max(...this.notifications.map(n => n.Id), 0) 
+      : 0;
   }
 
   loadFromStorage() {
@@ -31,20 +34,30 @@ class NotificationService {
     return [...this.notifications];
   }
 
+  async getById(id) {
+    await this.delay();
+    const notification = this.notifications.find(n => n.Id === id);
+    if (!notification) {
+      throw new Error("Notification not found");
+    }
+    return { ...notification };
+  }
+
   async getUnread() {
     await this.delay();
     return this.notifications.filter(n => !n.read).map(n => ({ ...n }));
   }
 
+  async getUnreadCount() {
+    await this.delay();
+    return this.notifications.filter(n => !n.read).length;
+  }
+
   async create(notificationData) {
     await this.delay();
-    const maxId = this.notifications.length > 0 
-      ? Math.max(...this.notifications.map(n => n.Id), 0) 
-      : 0;
-
     const newNotification = {
       ...notificationData,
-      Id: maxId + 1,
+      Id: ++this.maxId,
       read: false,
       createdAt: new Date().toISOString()
     };
