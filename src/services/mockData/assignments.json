@@ -1,0 +1,66 @@
+[
+  {
+    "Id": 1,
+    "classId": 1,
+    "name": "Quiz 1",
+    "dueDate": "2024-01-15",
+    "totalPoints": 25,
+    "category": "Quiz"
+  },
+  {
+    "Id": 2,
+    "classId": 1,
+    "name": "Homework Set 1",
+    "dueDate": "2024-01-12",
+    "totalPoints": 50,
+    "category": "Homework"
+  },
+  {
+    "Id": 3,
+    "classId": 1,
+    "name": "Midterm Exam",
+    "dueDate": "2024-01-20",
+    "totalPoints": 100,
+    "category": "Exam"
+  },
+  {
+    "Id": 4,
+    "classId": 2,
+    "name": "Essay 1",
+    "dueDate": "2024-01-18",
+    "totalPoints": 75,
+    "category": "Essay"
+  },
+  {
+    "Id": 5,
+    "classId": 2,
+    "name": "Reading Quiz",
+    "dueDate": "2024-01-10",
+    "totalPoints": 30,
+    "category": "Quiz"
+  },
+  {
+    "Id": 6,
+    "classId": 3,
+    "name": "Lab Report 1",
+    "dueDate": "2024-01-16",
+    "totalPoints": 60,
+    "category": "Lab"
+  },
+  {
+    "Id": 7,
+    "classId": 3,
+    "name": "Chapter Test",
+    "dueDate": "2024-01-22",
+    "totalPoints": 80,
+    "category": "Test"
+  },
+  {
+    "Id": 8,
+    "classId": 4,
+    "name": "Timeline Project",
+    "dueDate": "2024-01-25",
+    "totalPoints": 90,
+    "category": "Project"
+  }
+]
