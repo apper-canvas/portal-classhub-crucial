@@ -6,22 +6,18 @@ import FormField from "@/components/molecules/FormField";
 import Select from "@/components/atoms/Select";
 import Label from "@/components/atoms/Label";
 import { studentService } from "@/services/api/studentService";
-import { classService } from "@/services/api/classService";
 
 const StudentForm = ({ student, onSave, onCancel }) => {
-  const [formData, setFormData] = useState({
+const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
     dateOfBirth: "",
     enrollmentDate: "",
-    classIds: [],
     status: "active"
   });
-  const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
-
 useEffect(() => {
     if (student) {
       setFormData({
@@ -30,25 +26,10 @@ useEffect(() => {
         email: student.email_c || "",
         dateOfBirth: student.date_of_birth_c || "",
         enrollmentDate: student.enrollment_date_c || "",
-        classIds: student.class_ids_c ? student.class_ids_c.split(',').filter(id => id.trim()) : [],
         status: student.status_c || "active"
       });
     }
   }, [student]);
-
-  useEffect(() => {
-    loadClasses();
-  }, []);
-
-  const loadClasses = async () => {
-    try {
-      const classData = await classService.getAll();
-      setClasses(classData);
-    } catch (error) {
-      console.error("Error loading classes:", error);
-    }
-  };
-
   const validateForm = () => {
     const newErrors = {};
     
@@ -96,7 +77,6 @@ try {
         email_c: formData.email,
         date_of_birth_c: formData.dateOfBirth,
         enrollment_date_c: formData.enrollmentDate,
-        class_ids_c: formData.classIds.join(','),
         status_c: formData.status
       };
       
@@ -124,16 +104,6 @@ try {
       setErrors(prev => ({ ...prev, [field]: null }));
     }
   };
-
-  const handleClassToggle = (classId) => {
-    setFormData(prev => ({
-      ...prev,
-      classIds: prev.classIds.includes(classId)
-        ? prev.classIds.filter(id => id !== classId)
-        : [...prev.classIds, classId]
-    }));
-  };
-
   return (
     <Card className="p-6 max-w-2xl mx-auto">
       <div className="mb-6">
@@ -206,30 +176,6 @@ try {
             <option value="inactive">Inactive</option>
           </Select>
         </div>
-
-        <div className="space-y-3">
-          <Label>Enrolled Classes</Label>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {classes.map((classItem) => (
-              <label
-                key={classItem.Id}
-                className="flex items-center p-3 rounded-lg border-2 border-gray-200 hover:border-primary-300 cursor-pointer transition-colors"
-              >
-                <input
-                  type="checkbox"
-                  checked={formData.classIds.includes(classItem.Id)}
-                  onChange={() => handleClassToggle(classItem.Id)}
-                  className="mr-3 text-primary-600 focus:ring-primary-500"
-                />
-                <div>
-                  <div className="font-medium text-primary-900">{classItem.name}</div>
-                  <div className="text-sm text-secondary-400">{classItem.subject} - {classItem.period}</div>
-                </div>
-              </label>
-            ))}
-          </div>
-        </div>
-
         <div className="flex justify-end space-x-4 pt-6">
           <Button
             type="button"
