@@ -225,11 +225,10 @@ const Grades = () => {
             onClick={() => toast.info("Export functionality coming soon!")}
             disabled={!selectedClass}
           >
-            Export Grades
+Export Grades
           </Button>
         </div>
       </div>
-
       {/* Class Selection */}
       <Card className="p-6">
         <div className="flex flex-col sm:flex-row sm:items-end gap-4">
