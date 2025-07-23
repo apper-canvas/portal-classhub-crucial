@@ -22,16 +22,16 @@ const StudentForm = ({ student, onSave, onCancel }) => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
-  useEffect(() => {
+useEffect(() => {
     if (student) {
       setFormData({
-        firstName: student.firstName || "",
-        lastName: student.lastName || "",
-        email: student.email || "",
-        dateOfBirth: student.dateOfBirth || "",
-        enrollmentDate: student.enrollmentDate || "",
-        classIds: student.classIds || [],
-        status: student.status || "active"
+        firstName: student.first_name_c || "",
+        lastName: student.last_name_c || "",
+        email: student.email_c || "",
+        dateOfBirth: student.date_of_birth_c || "",
+        enrollmentDate: student.enrollment_date_c || "",
+        classIds: student.class_ids_c ? student.class_ids_c.split(',').filter(id => id.trim()) : [],
+        status: student.status_c || "active"
       });
     }
   }, [student]);
@@ -88,13 +88,24 @@ const StudentForm = ({ student, onSave, onCancel }) => {
     
     setLoading(true);
     
-    try {
+try {
+      // Map form data to database field names
+      const studentData = {
+        first_name_c: formData.firstName,
+        last_name_c: formData.lastName,
+        email_c: formData.email,
+        date_of_birth_c: formData.dateOfBirth,
+        enrollment_date_c: formData.enrollmentDate,
+        class_ids_c: formData.classIds.join(','),
+        status_c: formData.status
+      };
+      
       let savedStudent;
       if (student) {
-        savedStudent = await studentService.update(student.Id, formData);
+        savedStudent = await studentService.update(student.Id, studentData);
         toast.success("Student updated successfully");
       } else {
-        savedStudent = await studentService.create(formData);
+        savedStudent = await studentService.create(studentData);
         toast.success("Student created successfully");
       }
       
