@@ -9,7 +9,7 @@ class StudentService {
   }
 
   async getAll() {
-    try {
+try {
       const params = {
         fields: [
           { field: { Name: "Name" } },
@@ -21,7 +21,11 @@ class StudentService {
           { field: { Name: "date_of_birth_c" } },
           { field: { Name: "enrollment_date_c" } },
           { field: { Name: "class_ids_c" } },
-          { field: { Name: "status_c" } }
+          { field: { Name: "status_c" } },
+          { 
+            field: { Name: "classes_c" },
+            referenceField: { field: { Name: "Name" } }
+          }
         ]
       };
       
@@ -44,7 +48,7 @@ class StudentService {
   }
 
   async getById(id) {
-    try {
+try {
       const params = {
         fields: [
           { field: { Name: "Name" } },
@@ -56,7 +60,11 @@ class StudentService {
           { field: { Name: "date_of_birth_c" } },
           { field: { Name: "enrollment_date_c" } },
           { field: { Name: "class_ids_c" } },
-          { field: { Name: "status_c" } }
+          { field: { Name: "status_c" } },
+          { 
+            field: { Name: "classes_c" },
+            referenceField: { field: { Name: "Name" } }
+          }
         ]
       };
       
@@ -77,8 +85,7 @@ class StudentService {
       return null;
     }
   }
-
-  async create(studentData) {
+async create(studentData) {
     try {
       const params = {
         records: [{
@@ -91,7 +98,8 @@ class StudentService {
           date_of_birth_c: studentData.date_of_birth_c,
           enrollment_date_c: studentData.enrollment_date_c,
           class_ids_c: studentData.class_ids_c || "",
-          status_c: studentData.status_c || "active"
+          status_c: studentData.status_c || "active",
+          classes_c: studentData.classes_c ? parseInt(studentData.classes_c) : null
         }]
       };
       
@@ -122,7 +130,7 @@ class StudentService {
     }
   }
 
-  async update(id, studentData) {
+async update(id, studentData) {
     try {
       const params = {
         records: [{
@@ -136,7 +144,8 @@ class StudentService {
           date_of_birth_c: studentData.date_of_birth_c,
           enrollment_date_c: studentData.enrollment_date_c,
           class_ids_c: studentData.class_ids_c,
-          status_c: studentData.status_c
+          status_c: studentData.status_c,
+          classes_c: studentData.classes_c ? parseInt(studentData.classes_c) : null
         }]
       };
       
