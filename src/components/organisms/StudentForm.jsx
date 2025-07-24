@@ -44,14 +44,31 @@ useEffect(() => {
     loadClasses();
   }, []);
 
+// Helper function to format date for HTML date input (YYYY-MM-DD)
+  const formatDateForInput = (dateValue) => {
+    if (!dateValue) return "";
+    
+    try {
+      // Handle different date formats
+      const date = new Date(dateValue);
+      if (isNaN(date.getTime())) return "";
+      
+      // Convert to YYYY-MM-DD format required by HTML date input
+      return date.toISOString().split('T')[0];
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return "";
+    }
+  };
+
   useEffect(() => {
-if (student) {
+    if (student) {
       setFormData({
         firstName: student.first_name_c || "",
         lastName: student.last_name_c || "",
         email: student.email_c || "",
-        dateOfBirth: student.date_of_birth_c || "",
-        enrollmentDate: student.enrollment_date_c || "",
+        dateOfBirth: formatDateForInput(student.date_of_birth_c),
+        enrollmentDate: formatDateForInput(student.enrollment_date_c),
         status: student.status_c || "active",
         classes: student.classes_c?.Id || "",
         classes1: student.classes1_c?.Id || "",
