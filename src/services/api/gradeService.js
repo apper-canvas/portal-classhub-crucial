@@ -153,13 +153,16 @@ class GradeService {
   async create(gradeData) {
     try {
       const params = {
-        records: [{
+records: [{
           Name: gradeData.Name || `Grade for Student ${gradeData.student_id_c || gradeData.studentId}`,
           Tags: gradeData.Tags || "",
-          Owner: parseInt(gradeData.Owner) || null,
-          student_id_c: parseInt(gradeData.student_id_c || gradeData.studentId),
-          assignment_id_c: parseInt(gradeData.assignment_id_c || gradeData.assignmentId),
-          score_c: parseInt(gradeData.score_c || gradeData.score),
+          Owner: gradeData.Owner ? parseInt(gradeData.Owner) || null : null,
+          student_id_c: gradeData.student_id_c || gradeData.studentId ? 
+            parseInt(gradeData.student_id_c || gradeData.studentId) || null : null,
+          assignment_id_c: gradeData.assignment_id_c || gradeData.assignmentId ? 
+            parseInt(gradeData.assignment_id_c || gradeData.assignmentId) || null : null,
+          score_c: gradeData.score_c || gradeData.score ? 
+            parseFloat(gradeData.score_c || gradeData.score) || 0 : 0,
           submitted_date_c: gradeData.submitted_date_c || gradeData.submittedDate
         }]
       };
@@ -194,14 +197,17 @@ class GradeService {
   async update(id, gradeData) {
     try {
       const params = {
-        records: [{
+records: [{
           Id: id,
           Name: gradeData.Name || `Grade for Student ${gradeData.student_id_c || gradeData.studentId}`,
           Tags: gradeData.Tags,
-          Owner: gradeData.Owner ? parseInt(gradeData.Owner) : null,
-          student_id_c: parseInt(gradeData.student_id_c || gradeData.studentId),
-          assignment_id_c: parseInt(gradeData.assignment_id_c || gradeData.assignmentId),
-          score_c: parseInt(gradeData.score_c || gradeData.score),
+          Owner: gradeData.Owner ? parseInt(gradeData.Owner) || null : null,
+          student_id_c: gradeData.student_id_c || gradeData.studentId ? 
+            parseInt(gradeData.student_id_c || gradeData.studentId) || null : null,
+          assignment_id_c: gradeData.assignment_id_c || gradeData.assignmentId ? 
+            parseInt(gradeData.assignment_id_c || gradeData.assignmentId) || null : null,
+          score_c: gradeData.score_c || gradeData.score ? 
+            parseFloat(gradeData.score_c || gradeData.score) || 0 : 0,
           submitted_date_c: gradeData.submitted_date_c || gradeData.submittedDate
         }]
       };

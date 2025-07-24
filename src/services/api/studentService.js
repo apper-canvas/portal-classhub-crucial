@@ -141,7 +141,7 @@ async create(studentData) {
 records: [{
           Name: studentData.Name || `${studentData.first_name_c} ${studentData.last_name_c}`,
           Tags: studentData.Tags || "",
-          Owner: parseInt(studentData.Owner) || null,
+          Owner: studentData.Owner ? parseInt(studentData.Owner) || null : null,
           first_name_c: studentData.first_name_c,
           last_name_c: studentData.last_name_c,
           email_c: studentData.email_c,
@@ -149,14 +149,14 @@ records: [{
           enrollment_date_c: studentData.enrollment_date_c,
           class_ids_c: studentData.class_ids_c || "",
           status_c: studentData.status_c || "active",
-          classes_c: studentData.classes_c ? parseInt(studentData.classes_c) : null,
-          classes1_c: studentData.classes1_c ? parseInt(studentData.classes1_c) : null,
-classes2_c: studentData.classes2_c || null,
-          classes3_c: studentData.classes3_c ? parseFloat(studentData.classes3_c) : null,
-classes4_c: studentData.classes4_c ? parseFloat(studentData.classes4_c) : null,
-          classes5_c: studentData.classes5_c ? parseInt(studentData.classes5_c) : null,
-          classes6_c: studentData.classes6_c ? parseInt(studentData.classes6_c) : null,
-          classes7_c: studentData.classes7_c ? parseInt(studentData.classes7_c) : null
+          classes_c: studentData.classes_c ? parseInt(studentData.classes_c) || null : null,
+          classes1_c: studentData.classes1_c ? parseInt(studentData.classes1_c) || null : null,
+          classes2_c: studentData.classes2_c || null,
+          classes3_c: studentData.classes3_c ? parseFloat(studentData.classes3_c) || 0 : null,
+          classes4_c: studentData.classes4_c ? parseFloat(studentData.classes4_c) || 0 : null,
+          classes5_c: studentData.classes5_c ? parseInt(studentData.classes5_c) || null : null,
+          classes6_c: studentData.classes6_c ? parseInt(studentData.classes6_c) || null : null,
+          classes7_c: studentData.classes7_c ? parseInt(studentData.classes7_c) || null : null
         }]
       };
       
@@ -194,7 +194,7 @@ records: [{
           Id: id,
           Name: studentData.Name || `${studentData.first_name_c} ${studentData.last_name_c}`,
           Tags: studentData.Tags,
-          Owner: studentData.Owner ? parseInt(studentData.Owner) : null,
+          Owner: studentData.Owner ? parseInt(studentData.Owner) || null : null,
           first_name_c: studentData.first_name_c,
           last_name_c: studentData.last_name_c,
           email_c: studentData.email_c,
@@ -202,14 +202,14 @@ records: [{
           enrollment_date_c: studentData.enrollment_date_c,
           class_ids_c: studentData.class_ids_c,
           status_c: studentData.status_c,
-          classes_c: studentData.classes_c ? parseInt(studentData.classes_c) : null,
-          classes1_c: studentData.classes1_c ? parseInt(studentData.classes1_c) : null,
-classes2_c: studentData.classes2_c || null,
-          classes3_c: studentData.classes3_c ? parseFloat(studentData.classes3_c) : null,
-classes4_c: studentData.classes4_c ? parseFloat(studentData.classes4_c) : null,
-          classes5_c: studentData.classes5_c ? parseInt(studentData.classes5_c) : null,
-          classes6_c: studentData.classes6_c ? parseInt(studentData.classes6_c) : null,
-          classes7_c: studentData.classes7_c ? parseInt(studentData.classes7_c) : null
+          classes_c: studentData.classes_c ? parseInt(studentData.classes_c) || null : null,
+          classes1_c: studentData.classes1_c ? parseInt(studentData.classes1_c) || null : null,
+          classes2_c: studentData.classes2_c || null,
+          classes3_c: studentData.classes3_c ? parseFloat(studentData.classes3_c) || 0 : null,
+          classes4_c: studentData.classes4_c ? parseFloat(studentData.classes4_c) || 0 : null,
+          classes5_c: studentData.classes5_c ? parseInt(studentData.classes5_c) || null : null,
+          classes6_c: studentData.classes6_c ? parseInt(studentData.classes6_c) || null : null,
+          classes7_c: studentData.classes7_c ? parseInt(studentData.classes7_c) || null : null
         }]
       };
       

@@ -192,12 +192,14 @@ class AttendanceService {
   async create(attendanceData) {
     try {
       const params = {
-        records: [{
+records: [{
           Name: attendanceData.Name || `Attendance for ${attendanceData.date_c || attendanceData.date}`,
           Tags: attendanceData.Tags || "",
-          Owner: parseInt(attendanceData.Owner) || null,
-          student_id_c: parseInt(attendanceData.student_id_c || attendanceData.studentId),
-          class_id_c: parseInt(attendanceData.class_id_c || attendanceData.classId),
+          Owner: attendanceData.Owner ? parseInt(attendanceData.Owner) || null : null,
+          student_id_c: attendanceData.student_id_c || attendanceData.studentId ? 
+            parseInt(attendanceData.student_id_c || attendanceData.studentId) || null : null,
+          class_id_c: attendanceData.class_id_c || attendanceData.classId ? 
+            parseInt(attendanceData.class_id_c || attendanceData.classId) || null : null,
           date_c: attendanceData.date_c || attendanceData.date,
           status_c: attendanceData.status_c || attendanceData.status
         }]
@@ -234,12 +236,14 @@ class AttendanceService {
     try {
       const params = {
         records: [{
-          Id: id,
+Id: id,
           Name: attendanceData.Name || `Attendance for ${attendanceData.date_c || attendanceData.date}`,
           Tags: attendanceData.Tags,
-          Owner: attendanceData.Owner ? parseInt(attendanceData.Owner) : null,
-          student_id_c: parseInt(attendanceData.student_id_c || attendanceData.studentId),
-          class_id_c: parseInt(attendanceData.class_id_c || attendanceData.classId),
+          Owner: attendanceData.Owner ? parseInt(attendanceData.Owner) || null : null,
+          student_id_c: attendanceData.student_id_c || attendanceData.studentId ? 
+            parseInt(attendanceData.student_id_c || attendanceData.studentId) || null : null,
+          class_id_c: attendanceData.class_id_c || attendanceData.classId ? 
+            parseInt(attendanceData.class_id_c || attendanceData.classId) || null : null,
           date_c: attendanceData.date_c || attendanceData.date,
           status_c: attendanceData.status_c || attendanceData.status
         }]

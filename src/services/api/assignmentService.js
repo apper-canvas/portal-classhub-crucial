@@ -114,14 +114,16 @@ class AssignmentService {
   async create(assignmentData) {
     try {
       const params = {
-        records: [{
+records: [{
           Name: assignmentData.Name || assignmentData.name,
           Tags: assignmentData.Tags || "",
-          Owner: parseInt(assignmentData.Owner) || null,
+          Owner: assignmentData.Owner ? parseInt(assignmentData.Owner) || null : null,
           due_date_c: assignmentData.due_date_c || assignmentData.dueDate,
-          total_points_c: parseInt(assignmentData.total_points_c || assignmentData.totalPoints),
+          total_points_c: assignmentData.total_points_c || assignmentData.totalPoints ? 
+            parseFloat(assignmentData.total_points_c || assignmentData.totalPoints) || 0 : 0,
           category_c: assignmentData.category_c || assignmentData.category,
-          class_id_c: parseInt(assignmentData.class_id_c || assignmentData.classId)
+          class_id_c: assignmentData.class_id_c || assignmentData.classId ? 
+            parseInt(assignmentData.class_id_c || assignmentData.classId) || null : null
         }]
       };
       
@@ -154,16 +156,18 @@ class AssignmentService {
 
   async update(id, assignmentData) {
     try {
-      const params = {
+const params = {
         records: [{
           Id: id,
           Name: assignmentData.Name || assignmentData.name,
           Tags: assignmentData.Tags,
-          Owner: assignmentData.Owner ? parseInt(assignmentData.Owner) : null,
+          Owner: assignmentData.Owner ? parseInt(assignmentData.Owner) || null : null,
           due_date_c: assignmentData.due_date_c || assignmentData.dueDate,
-          total_points_c: parseInt(assignmentData.total_points_c || assignmentData.totalPoints),
+          total_points_c: assignmentData.total_points_c || assignmentData.totalPoints ? 
+            parseFloat(assignmentData.total_points_c || assignmentData.totalPoints) || 0 : 0,
           category_c: assignmentData.category_c || assignmentData.category,
-          class_id_c: parseInt(assignmentData.class_id_c || assignmentData.classId)
+          class_id_c: assignmentData.class_id_c || assignmentData.classId ? 
+            parseInt(assignmentData.class_id_c || assignmentData.classId) || null : null
         }]
       };
       

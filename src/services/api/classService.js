@@ -119,16 +119,16 @@ const params = {
   async update(id, classData) {
     try {
 const params = {
-        records: [{
+records: [{
           Id: id,
           Name: classData.Name,
           Tags: classData.Tags,
-          Owner: classData.Owner ? parseInt(classData.Owner) : null,
+          Owner: classData.Owner ? parseInt(classData.Owner) || null : null,
           subject_c: classData.subject_c,
           period_c: classData.period_c,
           room_c: classData.room_c,
           student_ids_c: classData.student_ids_c,
-          fee_c: classData.fee_c
+          fee_c: classData.fee_c ? parseFloat(classData.fee_c) || 0 : null
         }]
       };
       
