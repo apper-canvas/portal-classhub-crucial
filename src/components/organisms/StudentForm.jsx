@@ -16,7 +16,13 @@ const [formData, setFormData] = useState({
     enrollmentDate: "",
     status: "active",
     classes: "",
-    classes1: ""
+    classes1: "",
+    classes2: "",
+    classes3: "",
+    classes4: "",
+    classes5: "",
+    classes6: "",
+    classes7: ""
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -48,7 +54,13 @@ if (student) {
         enrollmentDate: student.enrollment_date_c || "",
         status: student.status_c || "active",
         classes: student.classes_c?.Id || "",
-        classes1: student.classes1_c?.Id || ""
+        classes1: student.classes1_c?.Id || "",
+        classes2: student.classes2_c?.Id || "",
+        classes3: student.classes3_c?.Id || "",
+        classes4: student.classes4_c?.Id || "",
+        classes5: student.classes5_c?.Id || "",
+        classes6: student.classes6_c?.Id || "",
+        classes7: student.classes7_c?.Id || ""
       });
     }
   }, [student]);
@@ -93,7 +105,7 @@ if (student) {
     setLoading(true);
     
 try {
-      // Map form data to database field names
+// Map form data to database field names
 const studentData = {
         first_name_c: formData.firstName,
         last_name_c: formData.lastName,
@@ -102,7 +114,13 @@ const studentData = {
         enrollment_date_c: formData.enrollmentDate,
         status_c: formData.status,
         classes_c: formData.classes ? parseInt(formData.classes) : null,
-        classes1_c: formData.classes1 ? parseInt(formData.classes1) : null
+        classes1_c: formData.classes1 ? parseInt(formData.classes1) : null,
+        classes2_c: formData.classes2 ? parseInt(formData.classes2) : null,
+        classes3_c: formData.classes3 ? parseInt(formData.classes3) : null,
+        classes4_c: formData.classes4 ? parseInt(formData.classes4) : null,
+        classes5_c: formData.classes5 ? parseInt(formData.classes5) : null,
+        classes6_c: formData.classes6 ? parseInt(formData.classes6) : null,
+        classes7_c: formData.classes7 ? parseInt(formData.classes7) : null
       };
       
       let savedStudent;
@@ -215,6 +233,126 @@ const studentData = {
           <Select
             value={formData.classes1}
             onChange={(e) => handleInputChange("classes1", e.target.value)}
+            disabled={classesLoading}
+          >
+            <option value="">Select a class (optional)</option>
+            {classesLoading ? (
+              <option value="">Loading classes...</option>
+            ) : (
+              classes.map((classItem) => (
+                <option key={classItem.Id} value={classItem.Id}>
+                  {classItem.Name} - {classItem.subject_c}
+                </option>
+              ))
+            )}
+          </Select>
+        </div>
+
+        <div className="space-y-3">
+          <Label>Classes2</Label>
+          <Select
+            value={formData.classes2}
+            onChange={(e) => handleInputChange("classes2", e.target.value)}
+            disabled={classesLoading}
+          >
+            <option value="">Select a class (optional)</option>
+            {classesLoading ? (
+              <option value="">Loading classes...</option>
+            ) : (
+              classes.map((classItem) => (
+                <option key={classItem.Id} value={classItem.Id}>
+                  {classItem.Name} - {classItem.subject_c}
+                </option>
+              ))
+            )}
+          </Select>
+        </div>
+
+        <div className="space-y-3">
+          <Label>Classes3</Label>
+          <Select
+            value={formData.classes3}
+            onChange={(e) => handleInputChange("classes3", e.target.value)}
+            disabled={classesLoading}
+          >
+            <option value="">Select a class (optional)</option>
+            {classesLoading ? (
+              <option value="">Loading classes...</option>
+            ) : (
+              classes.map((classItem) => (
+                <option key={classItem.Id} value={classItem.Id}>
+                  {classItem.Name} - {classItem.subject_c}
+                </option>
+              ))
+            )}
+          </Select>
+        </div>
+
+        <div className="space-y-3">
+          <Label>Classes4</Label>
+          <Select
+            value={formData.classes4}
+            onChange={(e) => handleInputChange("classes4", e.target.value)}
+            disabled={classesLoading}
+          >
+            <option value="">Select a class (optional)</option>
+            {classesLoading ? (
+              <option value="">Loading classes...</option>
+            ) : (
+              classes.map((classItem) => (
+                <option key={classItem.Id} value={classItem.Id}>
+                  {classItem.Name} - {classItem.subject_c}
+                </option>
+              ))
+            )}
+          </Select>
+        </div>
+
+        <div className="space-y-3">
+          <Label>Classes5</Label>
+          <Select
+            value={formData.classes5}
+            onChange={(e) => handleInputChange("classes5", e.target.value)}
+            disabled={classesLoading}
+          >
+            <option value="">Select a class (optional)</option>
+            {classesLoading ? (
+              <option value="">Loading classes...</option>
+            ) : (
+              classes.map((classItem) => (
+                <option key={classItem.Id} value={classItem.Id}>
+                  {classItem.Name} - {classItem.subject_c}
+                </option>
+              ))
+            )}
+          </Select>
+        </div>
+
+        <div className="space-y-3">
+          <Label>Classes6</Label>
+          <Select
+            value={formData.classes6}
+            onChange={(e) => handleInputChange("classes6", e.target.value)}
+            disabled={classesLoading}
+          >
+            <option value="">Select a class (optional)</option>
+            {classesLoading ? (
+              <option value="">Loading classes...</option>
+            ) : (
+              classes.map((classItem) => (
+                <option key={classItem.Id} value={classItem.Id}>
+                  {classItem.Name} - {classItem.subject_c}
+                </option>
+              ))
+            )}
+          </Select>
+        </div>
+
+        <div className="space-y-3">
+          <Label>Classes7</Label>
+          <Select
+            value={formData.classes7}
+            onChange={(e) => handleInputChange("classes7", e.target.value)}
             disabled={classesLoading}
           >
             <option value="">Select a class (optional)</option>

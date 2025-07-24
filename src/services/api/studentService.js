@@ -10,7 +10,7 @@ class StudentService {
 
   async getAll() {
 try {
-      const params = {
+const params = {
 fields: [
           { field: { Name: "Name" } },
           { field: { Name: "Tags" } },
@@ -28,6 +28,30 @@ fields: [
           },
           { 
             field: { Name: "classes1_c" },
+            referenceField: { field: { Name: "Name" } }
+          },
+          { 
+            field: { Name: "classes2_c" },
+            referenceField: { field: { Name: "Name" } }
+          },
+          { 
+            field: { Name: "classes3_c" },
+            referenceField: { field: { Name: "Name" } }
+          },
+          { 
+            field: { Name: "classes4_c" },
+            referenceField: { field: { Name: "Name" } }
+          },
+          { 
+            field: { Name: "classes5_c" },
+            referenceField: { field: { Name: "Name" } }
+          },
+          { 
+            field: { Name: "classes6_c" },
+            referenceField: { field: { Name: "Name" } }
+          },
+          { 
+            field: { Name: "classes7_c" },
             referenceField: { field: { Name: "Name" } }
           }
         ]
@@ -54,7 +78,7 @@ fields: [
   async getById(id) {
 try {
       const params = {
-        fields: [
+fields: [
 { field: { Name: "Name" } },
           { field: { Name: "Tags" } },
           { field: { Name: "Owner" } },
@@ -71,6 +95,30 @@ try {
           },
           { 
             field: { Name: "classes1_c" },
+            referenceField: { field: { Name: "Name" } }
+          },
+          { 
+            field: { Name: "classes2_c" },
+            referenceField: { field: { Name: "Name" } }
+          },
+          { 
+            field: { Name: "classes3_c" },
+            referenceField: { field: { Name: "Name" } }
+          },
+          { 
+            field: { Name: "classes4_c" },
+            referenceField: { field: { Name: "Name" } }
+          },
+          { 
+            field: { Name: "classes5_c" },
+            referenceField: { field: { Name: "Name" } }
+          },
+          { 
+            field: { Name: "classes6_c" },
+            referenceField: { field: { Name: "Name" } }
+          },
+          { 
+            field: { Name: "classes7_c" },
             referenceField: { field: { Name: "Name" } }
           }
         ]
@@ -108,7 +156,13 @@ records: [{
           class_ids_c: studentData.class_ids_c || "",
           status_c: studentData.status_c || "active",
           classes_c: studentData.classes_c ? parseInt(studentData.classes_c) : null,
-          classes1_c: studentData.classes1_c ? parseInt(studentData.classes1_c) : null
+          classes1_c: studentData.classes1_c ? parseInt(studentData.classes1_c) : null,
+          classes2_c: studentData.classes2_c ? parseInt(studentData.classes2_c) : null,
+          classes3_c: studentData.classes3_c ? parseInt(studentData.classes3_c) : null,
+          classes4_c: studentData.classes4_c ? parseInt(studentData.classes4_c) : null,
+          classes5_c: studentData.classes5_c ? parseInt(studentData.classes5_c) : null,
+          classes6_c: studentData.classes6_c ? parseInt(studentData.classes6_c) : null,
+          classes7_c: studentData.classes7_c ? parseInt(studentData.classes7_c) : null
         }]
       };
       
@@ -155,7 +209,13 @@ records: [{
           class_ids_c: studentData.class_ids_c,
           status_c: studentData.status_c,
           classes_c: studentData.classes_c ? parseInt(studentData.classes_c) : null,
-          classes1_c: studentData.classes1_c ? parseInt(studentData.classes1_c) : null
+          classes1_c: studentData.classes1_c ? parseInt(studentData.classes1_c) : null,
+          classes2_c: studentData.classes2_c ? parseInt(studentData.classes2_c) : null,
+          classes3_c: studentData.classes3_c ? parseInt(studentData.classes3_c) : null,
+          classes4_c: studentData.classes4_c ? parseInt(studentData.classes4_c) : null,
+          classes5_c: studentData.classes5_c ? parseInt(studentData.classes5_c) : null,
+          classes6_c: studentData.classes6_c ? parseInt(studentData.classes6_c) : null,
+          classes7_c: studentData.classes7_c ? parseInt(studentData.classes7_c) : null
         }]
       };
       
