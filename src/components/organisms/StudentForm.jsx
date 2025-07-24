@@ -94,14 +94,14 @@ useEffect(() => {
         dateOfBirth: formatDateForInput(student.date_of_birth_c),
         enrollmentDate: formatDateForInput(student.enrollment_date_c),
         status: student.status_c || "active",
-        classes: student.classes_c?.Id || null,
-        classes1: student.classes1_c?.Id || null,
-        classes2: student.classes2_c?.Id || null,
-        classes3: student.classes3_c?.Id || null,
-        classes4: student.classes4_c?.Id || null,
-        classes5: student.classes5_c?.Id || null,
-        classes6: student.classes6_c?.Id || null,
-        classes7: student.classes7_c?.Id || null
+        classes: student.classes_c?.Id || "",
+        classes1: student.classes1_c?.Id || "",
+        classes2: student.classes2_c?.Id || "",
+        classes3: student.classes3_c?.Id || "",
+        classes4: student.classes4_c?.Id || "",
+        classes5: student.classes5_c?.Id || "",
+        classes6: student.classes6_c?.Id || "",
+        classes7: student.classes7_c?.Id || ""
       });
     }
   }, [student]);
