@@ -10,7 +10,7 @@ class ClassService {
 
   async getAll() {
     try {
-      const params = {
+const params = {
         fields: [
           { field: { Name: "Name" } },
           { field: { Name: "Tags" } },
@@ -18,7 +18,8 @@ class ClassService {
           { field: { Name: "subject_c" } },
           { field: { Name: "period_c" } },
           { field: { Name: "room_c" } },
-          { field: { Name: "student_ids_c" } }
+          { field: { Name: "student_ids_c" } },
+          { field: { Name: "fee_c" } }
         ]
       };
       
@@ -42,7 +43,7 @@ class ClassService {
 
   async getById(id) {
     try {
-      const params = {
+const params = {
         fields: [
           { field: { Name: "Name" } },
           { field: { Name: "Tags" } },
@@ -50,7 +51,8 @@ class ClassService {
           { field: { Name: "subject_c" } },
           { field: { Name: "period_c" } },
           { field: { Name: "room_c" } },
-          { field: { Name: "student_ids_c" } }
+          { field: { Name: "student_ids_c" } },
+          { field: { Name: "fee_c" } }
         ]
       };
       
@@ -74,7 +76,7 @@ class ClassService {
 
   async create(classData) {
     try {
-      const params = {
+const params = {
         records: [{
           Name: classData.Name,
           Tags: classData.Tags || "",
@@ -82,7 +84,8 @@ class ClassService {
           subject_c: classData.subject_c,
           period_c: classData.period_c,
           room_c: classData.room_c,
-          student_ids_c: classData.student_ids_c || ""
+          student_ids_c: classData.student_ids_c || "",
+          fee_c: classData.fee_c || null
         }]
       };
       
@@ -115,7 +118,7 @@ class ClassService {
 
   async update(id, classData) {
     try {
-      const params = {
+const params = {
         records: [{
           Id: id,
           Name: classData.Name,
@@ -124,7 +127,8 @@ class ClassService {
           subject_c: classData.subject_c,
           period_c: classData.period_c,
           room_c: classData.room_c,
-          student_ids_c: classData.student_ids_c
+          student_ids_c: classData.student_ids_c,
+          fee_c: classData.fee_c
         }]
       };
       
