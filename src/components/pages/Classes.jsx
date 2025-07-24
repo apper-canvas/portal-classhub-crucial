@@ -29,19 +29,27 @@ const [classes, setClasses] = useState([]);
     filterClasses();
   }, [classes, searchQuery]);
 
-  const loadData = async () => {
+const loadData = async () => {
     try {
       setLoading(true);
       setError(null);
+      
+      // Load both classes and students data for form functionality
       const [classData, studentData] = await Promise.all([
         classService.getAll(),
         studentService.getAll()
       ]);
-      setClasses(classData);
-      setStudents(studentData);
+      
+      // Ensure students data is available for ClassForm search functionality
+      setClasses(classData || []);
+      setStudents(studentData || []);
+      
     } catch (err) {
       setError(err.message);
       console.error("Error loading data:", err);
+      // Set empty arrays on error to prevent undefined issues
+      setClasses([]);
+      setStudents([]);
     } finally {
       setLoading(false);
     }
@@ -321,10 +329,10 @@ title={`${student.first_name_c} ${student.last_name_c}`}
         </div>
       )}
 
-      {showForm && (
+{showForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-<ClassForm
+            <ClassForm
               classItem={selectedClass}
               students={students}
               onSave={handleSaveClass}
