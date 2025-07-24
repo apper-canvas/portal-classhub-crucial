@@ -1,5 +1,11 @@
 class ClassService {
   constructor() {
+    // Check if ApperSDK is available
+    if (typeof window === 'undefined' || !window.ApperSDK) {
+      console.error('Apper SDK not loaded. Please ensure the SDK script is included in index.html');
+      throw new Error('Apper SDK not available. Network operations will fail.');
+    }
+    
     const { ApperClient } = window.ApperSDK;
     this.apperClient = new ApperClient({
       apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
