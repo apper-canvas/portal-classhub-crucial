@@ -8,11 +8,12 @@ import ApperIcon from "@/components/ApperIcon";
 import { classService } from "@/services/api/classService";
 
 const ClassForm = ({ classItem, students = [], onSave, onCancel }) => {
-  const [formData, setFormData] = useState({
+const [formData, setFormData] = useState({
     name: "",
     subject: "",
     period: "",
     room: "",
+    fee: "",
     selectedStudents: []
   });
 const [loading, setLoading] = useState(false);
@@ -31,17 +32,18 @@ const [loading, setLoading] = useState(false);
         existingStudentIds.includes(student.Id)
       );
 
-      setFormData({
+setFormData({
         name: classItem.Name || "",
         subject: classItem.subject_c || "",
         period: classItem.period_c || "",
         room: classItem.room_c || "",
+        fee: classItem.fee_c || "",
         selectedStudents: existingStudents
       });
     }
   }, [classItem, students]);
 
-  const validateForm = () => {
+const validateForm = () => {
     const newErrors = {};
     
     if (!formData.name.trim()) {
@@ -58,6 +60,10 @@ const [loading, setLoading] = useState(false);
     
     if (!formData.room.trim()) {
       newErrors.room = "Room is required";
+    }
+    
+    if (!formData.fee.toString().trim()) {
+      newErrors.fee = "Fee is required";
     }
     
     setErrors(newErrors);
@@ -82,7 +88,8 @@ try {
         subject_c: formData.subject,
         period_c: formData.period,
         room_c: formData.room,
-        student_ids_c: studentIds
+        student_ids_c: studentIds,
+        fee_c: parseFloat(formData.fee) || 0
       };
       
       let savedClass;
@@ -172,7 +179,7 @@ try {
           placeholder="Enter subject (e.g., Mathematics, English)"
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
             label="Period"
             id="period"
@@ -191,6 +198,18 @@ try {
             placeholder="Enter room number"
           />
         </div>
+        
+        <FormField
+          label="Fee"
+          id="fee"
+          type="number"
+          step="0.01"
+          min="0"
+          value={formData.fee}
+          onChange={(e) => handleInputChange("fee", e.target.value)}
+          error={errors.fee}
+          placeholder="Enter class fee (e.g., 25.00)"
+        />
 
         {/* Student Selection Section */}
         <div className="space-y-4">
