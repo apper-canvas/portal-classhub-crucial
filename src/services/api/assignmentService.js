@@ -154,9 +154,9 @@ records: [{
     }
   }
 
-  async update(id, assignmentData) {
+async update(id, assignmentData) {
     try {
-const params = {
+      const params = {
         records: [{
           Id: id,
           Name: assignmentData.Name || assignmentData.name,
@@ -166,7 +166,7 @@ const params = {
           total_points_c: assignmentData.total_points_c || assignmentData.totalPoints ? 
             parseFloat(assignmentData.total_points_c || assignmentData.totalPoints) || 0 : 0,
           category_c: assignmentData.category_c || assignmentData.category,
-          class_id_c: assignmentData.class_id_c || assignmentData.classId ? 
+          class_id_c: (assignmentData.class_id_c || assignmentData.classId) ? 
             parseInt(assignmentData.class_id_c || assignmentData.classId) || null : null
         }]
       };
