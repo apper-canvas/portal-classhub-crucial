@@ -89,7 +89,7 @@ const classData = {
         period_c: formData.period,
         room_c: formData.room,
         student_ids_c: studentIds,
-        fee_c: formData.fee ? parseInt(formData.fee) || 0 : 0
+        fee_c: formData.fee ? parseFloat(formData.fee) || 0 : 0
       };
       
       let savedClass;

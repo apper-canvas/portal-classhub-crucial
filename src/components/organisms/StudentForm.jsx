@@ -8,8 +8,45 @@ import Card from "@/components/atoms/Card";
 import Input from "@/components/atoms/Input";
 import Button from "@/components/atoms/Button";
 import FormField from "@/components/molecules/FormField";
+import Loading from "@/components/ui/Loading";
 const StudentForm = ({ student, onSave, onCancel }) => {
-const [formData, setFormData] = useState({
+// Data validation utility functions
+  const validateEmail = (email) => {
+    if (!email) return true; // Allow empty emails
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validateDate = (dateString) => {
+    if (!dateString) return true; // Allow empty dates
+    const date = new Date(dateString);
+    return !isNaN(date.getTime()) && dateString.length >= 10;
+  };
+
+  const parseNumericField = (value, fallback = null) => {
+    if (value === null || value === undefined || value === '') {
+      return fallback;
+    }
+    const parsed = parseInt(value);
+    return isNaN(parsed) ? fallback : parsed;
+  };
+
+  const parseCurrencyField = (value, fallback = null) => {
+    if (value === null || value === undefined || value === '') {
+      return fallback;
+    }
+    const parsed = parseFloat(value);
+    return isNaN(parsed) ? fallback : parsed;
+  };
+
+  const validateRequired = (value, fieldName) => {
+    if (!value || (typeof value === 'string' && !value.trim())) {
+      return `${fieldName} is required`;
+    }
+    return null;
+  };
+
+  const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
@@ -88,48 +125,48 @@ const formatDateForInput = (dateValue) => {
 
 useEffect(() => {
     if (student) {
-setFormData({
+      setFormData({
         firstName: student.first_name_c || "",
         lastName: student.last_name_c || "",
         email: student.email_c || "",
         dateOfBirth: formatDateForInput(student.date_of_birth_c),
         enrollmentDate: formatDateForInput(student.enrollment_date_c),
         status: student.status_c || "active",
-        classes: student.classes_c?.Id || "",
+        classes: parseNumericField(student.classes_c?.Id, ""),
         classes1: student.classes1_c || "",
         classes2: student.classes2_c || "", // checkbox data as comma-separated string
-        classes3: student.classes3_c || "", // currency value - direct value, not lookup
-classes4: student.classes4_c || "", // currency value - direct value, not lookup
-        classes5: student.classes5_c?.Id || "",
-        classes6: student.classes6_c?.Id || "",
-        classes7: student.classes7_c?.Id || ""
+        classes3: parseCurrencyField(student.classes3_c, ""), // currency value - direct value, not lookup
+        classes4: parseCurrencyField(student.classes4_c, ""), // currency value - direct value, not lookup
+        classes5: parseNumericField(student.classes5_c?.Id, ""),
+        classes6: parseNumericField(student.classes6_c?.Id, ""),
+        classes7: parseNumericField(student.classes7_c?.Id, "")
       });
     }
   }, [student]);
 
-  const validateForm = () => {
+const validateForm = () => {
     const newErrors = {};
     
-    if (!formData.firstName.trim()) {
-      newErrors.firstName = "First name is required";
-    }
+    // Required field validation
+    const firstNameError = validateRequired(formData.firstName, "First name");
+    if (firstNameError) newErrors.firstName = firstNameError;
     
-    if (!formData.lastName.trim()) {
-      newErrors.lastName = "Last name is required";
-    }
+    const lastNameError = validateRequired(formData.lastName, "Last name");
+    if (lastNameError) newErrors.lastName = lastNameError;
     
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+    const emailError = validateRequired(formData.email, "Email");
+    if (emailError) newErrors.email = emailError;
+    else if (!validateEmail(formData.email)) {
       newErrors.email = "Please enter a valid email address";
     }
     
-    if (!formData.dateOfBirth) {
-      newErrors.dateOfBirth = "Date of birth is required";
+    // Date validation
+    if (formData.dateOfBirth && !validateDate(formData.dateOfBirth)) {
+      newErrors.dateOfBirth = "Please enter a valid date of birth";
     }
     
-    if (!formData.enrollmentDate) {
-      newErrors.enrollmentDate = "Enrollment date is required";
+    if (formData.enrollmentDate && !validateDate(formData.enrollmentDate)) {
+      newErrors.enrollmentDate = "Please enter a valid enrollment date";
     }
     
     setErrors(newErrors);
@@ -146,23 +183,23 @@ classes4: student.classes4_c || "", // currency value - direct value, not lookup
     
     setLoading(true);
     
-try {
-// Map form data to database field names
-const studentData = {
-        first_name_c: formData.firstName,
-        last_name_c: formData.lastName,
-        email_c: formData.email,
-        date_of_birth_c: formData.dateOfBirth,
-        enrollment_date_c: formData.enrollmentDate,
-        status_c: formData.status,
-        classes_c: formData.classes ? parseInt(formData.classes) : null,
-        classes1_c: formData.classes1 || null,
-        classes2_c: formData.classes2 || null, // checkbox data as comma-separated string
-        classes3_c: formData.classes3 ? parseFloat(formData.classes3) : null, // currency value
-classes4_c: formData.classes4 ? parseFloat(formData.classes4) : null,
-        classes5_c: formData.classes5 ? parseInt(formData.classes5) : null,
-        classes6_c: formData.classes6 ? parseInt(formData.classes6) : null,
-        classes7_c: formData.classes7 ? parseInt(formData.classes7) : null
+    try {
+      // Map form data to database field names with proper type validation
+      const studentData = {
+        first_name_c: formData.firstName?.trim() || null,
+        last_name_c: formData.lastName?.trim() || null,
+        email_c: formData.email?.trim() || null,
+        date_of_birth_c: formData.dateOfBirth || null,
+        enrollment_date_c: formData.enrollmentDate || null,
+        status_c: formData.status || "active",
+        classes_c: parseNumericField(formData.classes),
+        classes1_c: formData.classes1?.trim() || null,
+        classes2_c: formData.classes2?.trim() || null, // checkbox data as comma-separated string
+        classes3_c: parseCurrencyField(formData.classes3), // currency value
+        classes4_c: parseCurrencyField(formData.classes4), // currency value
+        classes5_c: parseNumericField(formData.classes5),
+        classes6_c: parseNumericField(formData.classes6),
+        classes7_c: parseNumericField(formData.classes7)
       };
       
       let savedStudent;
