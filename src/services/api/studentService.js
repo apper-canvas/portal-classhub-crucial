@@ -34,9 +34,8 @@ fields: [
             field: { Name: "classes2_c" },
             referenceField: { field: { Name: "Name" } }
           },
-          { 
-            field: { Name: "classes3_c" },
-            referenceField: { field: { Name: "Name" } }
+{ 
+            field: { Name: "classes3_c" }
           },
           { 
             field: { Name: "classes4_c" },
@@ -102,8 +101,7 @@ fields: [
             referenceField: { field: { Name: "Name" } }
           },
           { 
-            field: { Name: "classes3_c" },
-            referenceField: { field: { Name: "Name" } }
+field: { Name: "classes3_c" }
           },
           { 
             field: { Name: "classes4_c" },
@@ -157,8 +155,8 @@ records: [{
           status_c: studentData.status_c || "active",
           classes_c: studentData.classes_c ? parseInt(studentData.classes_c) : null,
           classes1_c: studentData.classes1_c ? parseInt(studentData.classes1_c) : null,
-          classes2_c: studentData.classes2_c ? parseInt(studentData.classes2_c) : null,
-          classes3_c: studentData.classes3_c ? parseInt(studentData.classes3_c) : null,
+classes2_c: studentData.classes2_c ? parseInt(studentData.classes2_c) : null,
+          classes3_c: studentData.classes3_c ? parseFloat(studentData.classes3_c) : null,
           classes4_c: studentData.classes4_c ? parseInt(studentData.classes4_c) : null,
           classes5_c: studentData.classes5_c ? parseInt(studentData.classes5_c) : null,
           classes6_c: studentData.classes6_c ? parseInt(studentData.classes6_c) : null,
@@ -210,8 +208,8 @@ records: [{
           status_c: studentData.status_c,
           classes_c: studentData.classes_c ? parseInt(studentData.classes_c) : null,
           classes1_c: studentData.classes1_c ? parseInt(studentData.classes1_c) : null,
-          classes2_c: studentData.classes2_c ? parseInt(studentData.classes2_c) : null,
-          classes3_c: studentData.classes3_c ? parseInt(studentData.classes3_c) : null,
+classes2_c: studentData.classes2_c ? parseInt(studentData.classes2_c) : null,
+          classes3_c: studentData.classes3_c ? parseFloat(studentData.classes3_c) : null,
           classes4_c: studentData.classes4_c ? parseInt(studentData.classes4_c) : null,
           classes5_c: studentData.classes5_c ? parseInt(studentData.classes5_c) : null,
           classes6_c: studentData.classes6_c ? parseInt(studentData.classes6_c) : null,

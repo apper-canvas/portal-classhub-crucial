@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import Button from "@/components/atoms/Button";
-import Card from "@/components/atoms/Card";
-import FormField from "@/components/molecules/FormField";
-import Select from "@/components/atoms/Select";
-import Label from "@/components/atoms/Label";
 import { studentService } from "@/services/api/studentService";
 import { classService } from "@/services/api/classService";
+import Label from "@/components/atoms/Label";
+import Select from "@/components/atoms/Select";
+import Card from "@/components/atoms/Card";
+import Input from "@/components/atoms/Input";
+import Button from "@/components/atoms/Button";
+import FormField from "@/components/molecules/FormField";
 const StudentForm = ({ student, onSave, onCancel }) => {
 const [formData, setFormData] = useState({
     firstName: "",
@@ -18,7 +19,7 @@ const [formData, setFormData] = useState({
     classes: "",
     classes1: "",
     classes2: "", // comma-separated string for checkbox values
-    classes3: "",
+    classes3: "", // currency value
     classes4: "",
     classes5: "",
     classes6: "",
@@ -87,7 +88,7 @@ const formatDateForInput = (dateValue) => {
 
 useEffect(() => {
     if (student) {
-      setFormData({
+setFormData({
         firstName: student.first_name_c || "",
         lastName: student.last_name_c || "",
         email: student.email_c || "",
@@ -97,7 +98,7 @@ useEffect(() => {
         classes: student.classes_c?.Id || "",
         classes1: student.classes1_c || "",
         classes2: student.classes2_c || "", // checkbox data as comma-separated string
-        classes3: student.classes3_c?.Id || "",
+        classes3: student.classes3_c || "", // currency value
         classes4: student.classes4_c?.Id || "",
         classes5: student.classes5_c?.Id || "",
         classes6: student.classes6_c?.Id || "",
@@ -157,7 +158,7 @@ const studentData = {
         classes_c: formData.classes ? parseInt(formData.classes) : null,
         classes1_c: formData.classes1 || null,
         classes2_c: formData.classes2 || null, // checkbox data as comma-separated string
-        classes3_c: formData.classes3 ? parseInt(formData.classes3) : null,
+        classes3_c: formData.classes3 ? parseFloat(formData.classes3) : null, // currency value
         classes4_c: formData.classes4 ? parseInt(formData.classes4) : null,
         classes5_c: formData.classes5 ? parseInt(formData.classes5) : null,
         classes6_c: formData.classes6 ? parseInt(formData.classes6) : null,
@@ -316,24 +317,16 @@ const studentData = {
           </div>
         </div>
 
-        <div className="space-y-3">
-          <Label>Classes3</Label>
-          <Select
+<div className="space-y-3">
+          <Label>Classes3 (Currency)</Label>
+          <Input
+            type="number"
+            step="0.01"
+            min="0"
+            placeholder="Enter amount (e.g., 99.99)"
             value={formData.classes3}
             onChange={(e) => handleInputChange("classes3", e.target.value)}
-            disabled={classesLoading}
-          >
-            <option value="">Select a class (optional)</option>
-            {classesLoading ? (
-              <option value="">Loading classes...</option>
-            ) : (
-              classes.map((classItem) => (
-                <option key={classItem.Id} value={classItem.Id}>
-                  {classItem.Name} - {classItem.subject_c}
-                </option>
-              ))
-            )}
-          </Select>
+          />
         </div>
 
         <div className="space-y-3">
