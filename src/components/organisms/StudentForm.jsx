@@ -99,7 +99,7 @@ setFormData({
         classes1: student.classes1_c || "",
         classes2: student.classes2_c || "", // checkbox data as comma-separated string
         classes3: student.classes3_c || "", // currency value
-        classes4: student.classes4_c?.Id || "",
+classes4: student.classes4_c || "",
         classes5: student.classes5_c?.Id || "",
         classes6: student.classes6_c?.Id || "",
         classes7: student.classes7_c?.Id || ""
@@ -159,7 +159,7 @@ const studentData = {
         classes1_c: formData.classes1 || null,
         classes2_c: formData.classes2 || null, // checkbox data as comma-separated string
         classes3_c: formData.classes3 ? parseFloat(formData.classes3) : null, // currency value
-        classes4_c: formData.classes4 ? parseInt(formData.classes4) : null,
+classes4_c: formData.classes4 ? parseFloat(formData.classes4) : null,
         classes5_c: formData.classes5 ? parseInt(formData.classes5) : null,
         classes6_c: formData.classes6 ? parseInt(formData.classes6) : null,
         classes7_c: formData.classes7 ? parseInt(formData.classes7) : null
@@ -329,24 +329,15 @@ const studentData = {
           />
         </div>
 
-        <div className="space-y-3">
+<div className="space-y-3">
           <Label>Classes4</Label>
-          <Select
+          <Input
+            type="number"
+            step="0.01"
+            placeholder="Enter amount (e.g., 150.00)"
             value={formData.classes4}
             onChange={(e) => handleInputChange("classes4", e.target.value)}
-            disabled={classesLoading}
-          >
-            <option value="">Select a class (optional)</option>
-            {classesLoading ? (
-              <option value="">Loading classes...</option>
-            ) : (
-              classes.map((classItem) => (
-                <option key={classItem.Id} value={classItem.Id}>
-                  {classItem.Name} - {classItem.subject_c}
-                </option>
-              ))
-            )}
-          </Select>
+          />
         </div>
 
         <div className="space-y-3">

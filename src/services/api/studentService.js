@@ -38,8 +38,7 @@ fields: [
             field: { Name: "classes3_c" }
           },
           { 
-            field: { Name: "classes4_c" },
-            referenceField: { field: { Name: "Name" } }
+field: { Name: "classes4_c" }
           },
           { 
             field: { Name: "classes5_c" },
@@ -104,8 +103,7 @@ fields: [
             field: { Name: "classes3_c" }
           },
           { 
-            field: { Name: "classes4_c" },
-            referenceField: { field: { Name: "Name" } }
+field: { Name: "classes4_c" }
           },
           { 
             field: { Name: "classes5_c" },
@@ -157,7 +155,7 @@ records: [{
           classes1_c: studentData.classes1_c ? parseInt(studentData.classes1_c) : null,
 classes2_c: studentData.classes2_c ? parseInt(studentData.classes2_c) : null,
           classes3_c: studentData.classes3_c ? parseFloat(studentData.classes3_c) : null,
-          classes4_c: studentData.classes4_c ? parseInt(studentData.classes4_c) : null,
+classes4_c: studentData.classes4_c ? parseFloat(studentData.classes4_c) : null,
           classes5_c: studentData.classes5_c ? parseInt(studentData.classes5_c) : null,
           classes6_c: studentData.classes6_c ? parseInt(studentData.classes6_c) : null,
           classes7_c: studentData.classes7_c ? parseInt(studentData.classes7_c) : null
@@ -210,7 +208,7 @@ records: [{
           classes1_c: studentData.classes1_c ? parseInt(studentData.classes1_c) : null,
 classes2_c: studentData.classes2_c ? parseInt(studentData.classes2_c) : null,
           classes3_c: studentData.classes3_c ? parseFloat(studentData.classes3_c) : null,
-          classes4_c: studentData.classes4_c ? parseInt(studentData.classes4_c) : null,
+classes4_c: studentData.classes4_c ? parseFloat(studentData.classes4_c) : null,
           classes5_c: studentData.classes5_c ? parseInt(studentData.classes5_c) : null,
           classes6_c: studentData.classes6_c ? parseInt(studentData.classes6_c) : null,
           classes7_c: studentData.classes7_c ? parseInt(studentData.classes7_c) : null
