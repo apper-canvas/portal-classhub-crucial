@@ -83,13 +83,13 @@ const validateForm = () => {
 try {
       // Map form data to database field names
       const studentIds = formData.selectedStudents.map(student => student.Id).join(',');
-      const classData = {
+const classData = {
         Name: formData.name,
         subject_c: formData.subject,
         period_c: formData.period,
         room_c: formData.room,
         student_ids_c: studentIds,
-        fee_c: parseFloat(formData.fee) || 0
+        fee_c: formData.fee ? parseInt(formData.fee) || 0 : 0
       };
       
       let savedClass;

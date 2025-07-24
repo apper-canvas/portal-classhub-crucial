@@ -74,7 +74,7 @@ const params = {
     }
   }
 
-  async create(classData) {
+async create(classData) {
     try {
 const params = {
         records: [{
@@ -85,7 +85,7 @@ const params = {
           period_c: classData.period_c,
           room_c: classData.room_c,
           student_ids_c: classData.student_ids_c || "",
-          fee_c: classData.fee_c || null
+          fee_c: parseInt(classData.fee_c) || 0
         }]
       };
       
