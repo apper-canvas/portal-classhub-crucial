@@ -17,7 +17,7 @@ const [formData, setFormData] = useState({
     status: "active",
     classes: "",
     classes1: "",
-    classes2: "",
+    classes2: "", // comma-separated string for checkbox values
     classes3: "",
     classes4: "",
     classes5: "",
@@ -93,10 +93,10 @@ useEffect(() => {
         email: student.email_c || "",
         dateOfBirth: formatDateForInput(student.date_of_birth_c),
         enrollmentDate: formatDateForInput(student.enrollment_date_c),
-status: student.status_c || "active",
+        status: student.status_c || "active",
         classes: student.classes_c?.Id || "",
         classes1: student.classes1_c || "",
-        classes2: student.classes2_c?.Id || "",
+        classes2: student.classes2_c || "", // checkbox data as comma-separated string
         classes3: student.classes3_c?.Id || "",
         classes4: student.classes4_c?.Id || "",
         classes5: student.classes5_c?.Id || "",
@@ -153,10 +153,10 @@ const studentData = {
         email_c: formData.email,
         date_of_birth_c: formData.dateOfBirth,
         enrollment_date_c: formData.enrollmentDate,
-status_c: formData.status,
+        status_c: formData.status,
         classes_c: formData.classes ? parseInt(formData.classes) : null,
         classes1_c: formData.classes1 || null,
-        classes2_c: formData.classes2 ? parseInt(formData.classes2) : null,
+        classes2_c: formData.classes2 || null, // checkbox data as comma-separated string
         classes3_c: formData.classes3 ? parseInt(formData.classes3) : null,
         classes4_c: formData.classes4 ? parseInt(formData.classes4) : null,
         classes5_c: formData.classes5 ? parseInt(formData.classes5) : null,
@@ -277,24 +277,43 @@ status_c: formData.status,
           placeholder="Enter class information (optional)"
         />
 
-        <div className="space-y-3">
+<div className="space-y-3">
           <Label>Classes2</Label>
-          <Select
-            value={formData.classes2}
-            onChange={(e) => handleInputChange("classes2", e.target.value)}
-            disabled={classesLoading}
-          >
-            <option value="">Select a class (optional)</option>
+          <div className="space-y-2">
             {classesLoading ? (
-              <option value="">Loading classes...</option>
+              <div className="text-sm text-secondary-400">Loading classes...</div>
             ) : (
-              classes.map((classItem) => (
-                <option key={classItem.Id} value={classItem.Id}>
-                  {classItem.Name} - {classItem.subject_c}
-                </option>
-              ))
+              classes.map((classItem) => {
+                const selectedClasses = formData.classes2 ? formData.classes2.split(',') : [];
+                const isChecked = selectedClasses.includes(classItem.Id.toString());
+                
+                return (
+                  <label key={classItem.Id} className="flex items-center space-x-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={isChecked}
+                      onChange={(e) => {
+                        const currentClasses = formData.classes2 ? formData.classes2.split(',').filter(id => id) : [];
+                        let updatedClasses;
+                        
+                        if (e.target.checked) {
+                          updatedClasses = [...currentClasses, classItem.Id.toString()];
+                        } else {
+                          updatedClasses = currentClasses.filter(id => id !== classItem.Id.toString());
+                        }
+                        
+                        handleInputChange("classes2", updatedClasses.join(','));
+                      }}
+                      className="rounded border-secondary-300 text-primary-600 focus:ring-primary-500"
+                    />
+                    <span className="text-sm text-primary-900">
+                      {classItem.Name} - {classItem.subject_c}
+                    </span>
+                  </label>
+                );
+              })
             )}
-          </Select>
+          </div>
         </div>
 
         <div className="space-y-3">
