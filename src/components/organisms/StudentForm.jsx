@@ -45,18 +45,42 @@ useEffect(() => {
   }, []);
 
 // Helper function to format date for HTML date input (YYYY-MM-DD)
-  const formatDateForInput = (dateValue) => {
+const formatDateForInput = (dateValue) => {
     if (!dateValue) return "";
     
     try {
+      // Log the incoming date value for debugging
+      console.log("Formatting date value:", dateValue, "Type:", typeof dateValue);
+      
+      let date;
+      
       // Handle different date formats
-      const date = new Date(dateValue);
-      if (isNaN(date.getTime())) return "";
+      if (typeof dateValue === 'string') {
+        // Handle ISO date strings, database date formats, etc.
+        date = new Date(dateValue);
+      } else if (typeof dateValue === 'number') {
+        // Handle timestamp
+        date = new Date(dateValue);
+      } else if (dateValue instanceof Date) {
+        // Already a Date object
+        date = dateValue;
+      } else {
+        // Try to convert whatever we received
+        date = new Date(dateValue);
+      }
+      
+      // Check if date is valid
+      if (isNaN(date.getTime())) {
+        console.warn("Invalid date value:", dateValue);
+        return "";
+      }
       
       // Convert to YYYY-MM-DD format required by HTML date input
-      return date.toISOString().split('T')[0];
+      const formattedDate = date.toISOString().split('T')[0];
+      console.log("Formatted date result:", formattedDate);
+      return formattedDate;
     } catch (error) {
-      console.error("Error formatting date:", error);
+      console.error("Error formatting date:", error, "Original value:", dateValue);
       return "";
     }
   };
