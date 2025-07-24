@@ -100,8 +100,8 @@ fields: [
             field: { Name: "classes2_c" },
             referenceField: { field: { Name: "Name" } }
           },
-          { 
-field: { Name: "classes3_c" }
+{ 
+            field: { Name: "classes3_c" }
           },
           { 
             field: { Name: "classes4_c" },
