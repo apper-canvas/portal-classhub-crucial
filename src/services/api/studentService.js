@@ -30,9 +30,8 @@ fields: [
             field: { Name: "classes1_c" },
             referenceField: { field: { Name: "Name" } }
           },
-          { 
-            field: { Name: "classes2_c" },
-            referenceField: { field: { Name: "Name" } }
+{ 
+            field: { Name: "classes2_c" }
           },
 { 
             field: { Name: "classes3_c" }
@@ -95,9 +94,8 @@ fields: [
             field: { Name: "classes1_c" },
             referenceField: { field: { Name: "Name" } }
           },
-          { 
-            field: { Name: "classes2_c" },
-            referenceField: { field: { Name: "Name" } }
+{ 
+            field: { Name: "classes2_c" }
           },
 { 
             field: { Name: "classes3_c" }
@@ -153,7 +151,7 @@ records: [{
           status_c: studentData.status_c || "active",
           classes_c: studentData.classes_c ? parseInt(studentData.classes_c) : null,
           classes1_c: studentData.classes1_c ? parseInt(studentData.classes1_c) : null,
-classes2_c: studentData.classes2_c ? parseInt(studentData.classes2_c) : null,
+classes2_c: studentData.classes2_c || null,
           classes3_c: studentData.classes3_c ? parseFloat(studentData.classes3_c) : null,
 classes4_c: studentData.classes4_c ? parseFloat(studentData.classes4_c) : null,
           classes5_c: studentData.classes5_c ? parseInt(studentData.classes5_c) : null,
@@ -206,7 +204,7 @@ records: [{
           status_c: studentData.status_c,
           classes_c: studentData.classes_c ? parseInt(studentData.classes_c) : null,
           classes1_c: studentData.classes1_c ? parseInt(studentData.classes1_c) : null,
-classes2_c: studentData.classes2_c ? parseInt(studentData.classes2_c) : null,
+classes2_c: studentData.classes2_c || null,
           classes3_c: studentData.classes3_c ? parseFloat(studentData.classes3_c) : null,
 classes4_c: studentData.classes4_c ? parseFloat(studentData.classes4_c) : null,
           classes5_c: studentData.classes5_c ? parseInt(studentData.classes5_c) : null,

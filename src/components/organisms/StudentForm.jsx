@@ -98,8 +98,8 @@ setFormData({
         classes: student.classes_c?.Id || "",
         classes1: student.classes1_c || "",
         classes2: student.classes2_c || "", // checkbox data as comma-separated string
-        classes3: student.classes3_c || "", // currency value
-classes4: student.classes4_c || "",
+        classes3: student.classes3_c || "", // currency value - direct value, not lookup
+classes4: student.classes4_c || "", // currency value - direct value, not lookup
         classes5: student.classes5_c?.Id || "",
         classes6: student.classes6_c?.Id || "",
         classes7: student.classes7_c?.Id || ""
