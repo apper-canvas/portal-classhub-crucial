@@ -135,9 +135,9 @@ useEffect(() => {
         classes: parseNumericField(student.classes_c?.Id, ""),
         classes1: student.classes1_c || "",
         classes2: student.classes2_c || "", // checkbox data as comma-separated string
-        classes3: parseCurrencyField(student.classes3_c, ""), // currency value - direct value, not lookup
+classes3: parseCurrencyField(student.classes3_c, ""), // currency value - direct value, not lookup
         classes4: parseCurrencyField(student.classes4_c, ""), // currency value - direct value, not lookup
-        classes5: parseNumericField(student.classes5_c?.Id, ""),
+        classes5: student.classes5_c || "", // email field - direct string value
         classes6: parseNumericField(student.classes6_c?.Id, ""),
         classes7: parseNumericField(student.classes7_c?.Id, "")
       });
@@ -195,9 +195,9 @@ const validateForm = () => {
         classes_c: parseNumericField(formData.classes),
         classes1_c: formData.classes1?.trim() || null,
         classes2_c: formData.classes2?.trim() || null, // checkbox data as comma-separated string
-        classes3_c: parseCurrencyField(formData.classes3), // currency value
+classes3_c: parseCurrencyField(formData.classes3), // currency value
         classes4_c: parseCurrencyField(formData.classes4), // currency value
-        classes5_c: parseNumericField(formData.classes5),
+        classes5_c: formData.classes5?.trim() || null, // email field - direct string value
         classes6_c: parseNumericField(formData.classes6),
         classes7_c: parseNumericField(formData.classes7)
       };
@@ -377,25 +377,14 @@ const validateForm = () => {
           />
         </div>
 
-        <div className="space-y-3">
-          <Label>Classes5</Label>
-          <Select
-            value={formData.classes5}
-            onChange={(e) => handleInputChange("classes5", e.target.value)}
-            disabled={classesLoading}
-          >
-            <option value="">Select a class (optional)</option>
-            {classesLoading ? (
-              <option value="">Loading classes...</option>
-            ) : (
-              classes.map((classItem) => (
-                <option key={classItem.Id} value={classItem.Id}>
-                  {classItem.Name} - {classItem.subject_c}
-                </option>
-              ))
-            )}
-          </Select>
-        </div>
+<FormField
+          label="Classes5 (Email)"
+          id="classes5"
+          type="email"
+          value={formData.classes5}
+          onChange={(e) => handleInputChange("classes5", e.target.value)}
+          placeholder="Enter email address (optional)"
+        />
 
         <div className="space-y-3">
           <Label>Classes6</Label>

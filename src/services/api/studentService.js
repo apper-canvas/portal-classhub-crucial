@@ -38,12 +38,11 @@ fields: [
           },
           { 
 field: { Name: "classes4_c" }
+},
+          {
+            field: { Name: "classes5_c" }
           },
-          { 
-            field: { Name: "classes5_c" },
-            referenceField: { field: { Name: "Name" } }
-          },
-          { 
+          {
             field: { Name: "classes6_c" },
             referenceField: { field: { Name: "Name" } }
           },
@@ -101,13 +100,12 @@ fields: [
             field: { Name: "classes3_c" }
           },
           { 
-field: { Name: "classes4_c" }
-          },
+},
           { 
-            field: { Name: "classes5_c" },
-            referenceField: { field: { Name: "Name" } }
+            field: { Name: "classes5_c" }
           },
-          { 
+          {
+            field: { Name: "classes6_c" },
             field: { Name: "classes6_c" },
             referenceField: { field: { Name: "Name" } }
           },
@@ -152,9 +150,9 @@ records: [{
           classes_c: studentData.classes_c ? parseInt(studentData.classes_c) || null : null,
           classes1_c: studentData.classes1_c ? parseInt(studentData.classes1_c) || null : null,
           classes2_c: studentData.classes2_c || null,
-          classes3_c: studentData.classes3_c ? parseFloat(studentData.classes3_c) || 0 : null,
-          classes4_c: studentData.classes4_c ? parseFloat(studentData.classes4_c) || 0 : null,
-          classes5_c: studentData.classes5_c ? parseInt(studentData.classes5_c) || null : null,
+classes4_c: studentData.classes4_c ? parseFloat(studentData.classes4_c) || null : null,
+          classes5_c: studentData.classes5_c || null, // email field - direct string value
+          // Handle lookup fields - convert to integer IDs
           classes6_c: studentData.classes6_c ? parseInt(studentData.classes6_c) || null : null,
           classes7_c: studentData.classes7_c ? parseInt(studentData.classes7_c) || null : null
         }]
@@ -205,9 +203,9 @@ records: [{
           classes_c: studentData.classes_c ? parseInt(studentData.classes_c) || null : null,
           classes1_c: studentData.classes1_c ? parseInt(studentData.classes1_c) || null : null,
           classes2_c: studentData.classes2_c || null,
-          classes3_c: studentData.classes3_c ? parseFloat(studentData.classes3_c) || 0 : null,
-          classes4_c: studentData.classes4_c ? parseFloat(studentData.classes4_c) || 0 : null,
-          classes5_c: studentData.classes5_c ? parseInt(studentData.classes5_c) || null : null,
+classes4_c: studentData.classes4_c ? parseFloat(studentData.classes4_c) || null : null,
+          classes5_c: studentData.classes5_c || null, // email field - direct string value
+          // Handle lookup fields - convert to integer IDs
           classes6_c: studentData.classes6_c ? parseInt(studentData.classes6_c) || null : null,
           classes7_c: studentData.classes7_c ? parseInt(studentData.classes7_c) || null : null
         }]
