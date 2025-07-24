@@ -6,9 +6,10 @@ import ApperIcon from "@/components/ApperIcon";
 const Sidebar = ({ isMobileOpen, onMobileClose }) => {
   const location = useLocation();
   
-  const navigationItems = [
+const navigationItems = [
     { name: "Dashboard", path: "/", icon: "LayoutDashboard" },
-    { name: "Students", path: "/students", icon: "Users" },
+    { name: "People", path: "/people", icon: "Users" },
+    { name: "Students", path: "/students", icon: "UserCheck" },
     { name: "Classes", path: "/classes", icon: "BookOpen" },
     { name: "Grades", path: "/grades", icon: "GraduationCap" },
     { name: "Attendance", path: "/attendance", icon: "Calendar" }
