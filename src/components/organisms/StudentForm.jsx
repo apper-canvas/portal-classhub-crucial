@@ -15,7 +15,8 @@ const [formData, setFormData] = useState({
     dateOfBirth: "",
     enrollmentDate: "",
     status: "active",
-    classes: ""
+    classes: "",
+    classes1: ""
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -38,7 +39,7 @@ useEffect(() => {
   }, []);
 
   useEffect(() => {
-    if (student) {
+if (student) {
       setFormData({
         firstName: student.first_name_c || "",
         lastName: student.last_name_c || "",
@@ -46,7 +47,8 @@ useEffect(() => {
         dateOfBirth: student.date_of_birth_c || "",
         enrollmentDate: student.enrollment_date_c || "",
         status: student.status_c || "active",
-        classes: student.classes_c?.Id || ""
+        classes: student.classes_c?.Id || "",
+        classes1: student.classes1_c?.Id || ""
       });
     }
   }, [student]);
@@ -99,7 +101,8 @@ const studentData = {
         date_of_birth_c: formData.dateOfBirth,
         enrollment_date_c: formData.enrollmentDate,
         status_c: formData.status,
-        classes_c: formData.classes ? parseInt(formData.classes) : null
+        classes_c: formData.classes ? parseInt(formData.classes) : null,
+        classes1_c: formData.classes1 ? parseInt(formData.classes1) : null
       };
       
       let savedStudent;
@@ -192,6 +195,26 @@ const studentData = {
           <Select
             value={formData.classes}
             onChange={(e) => handleInputChange("classes", e.target.value)}
+            disabled={classesLoading}
+          >
+            <option value="">Select a class (optional)</option>
+            {classesLoading ? (
+              <option value="">Loading classes...</option>
+            ) : (
+              classes.map((classItem) => (
+                <option key={classItem.Id} value={classItem.Id}>
+                  {classItem.Name} - {classItem.subject_c}
+                </option>
+              ))
+            )}
+          </Select>
+        </div>
+
+        <div className="space-y-3">
+          <Label>Classes1</Label>
+          <Select
+            value={formData.classes1}
+            onChange={(e) => handleInputChange("classes1", e.target.value)}
             disabled={classesLoading}
           >
             <option value="">Select a class (optional)</option>

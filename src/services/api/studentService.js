@@ -11,7 +11,7 @@ class StudentService {
   async getAll() {
 try {
       const params = {
-        fields: [
+fields: [
           { field: { Name: "Name" } },
           { field: { Name: "Tags" } },
           { field: { Name: "Owner" } },
@@ -24,6 +24,10 @@ try {
           { field: { Name: "status_c" } },
           { 
             field: { Name: "classes_c" },
+            referenceField: { field: { Name: "Name" } }
+          },
+          { 
+            field: { Name: "classes1_c" },
             referenceField: { field: { Name: "Name" } }
           }
         ]
@@ -51,7 +55,7 @@ try {
 try {
       const params = {
         fields: [
-          { field: { Name: "Name" } },
+{ field: { Name: "Name" } },
           { field: { Name: "Tags" } },
           { field: { Name: "Owner" } },
           { field: { Name: "first_name_c" } },
@@ -63,6 +67,10 @@ try {
           { field: { Name: "status_c" } },
           { 
             field: { Name: "classes_c" },
+            referenceField: { field: { Name: "Name" } }
+          },
+          { 
+            field: { Name: "classes1_c" },
             referenceField: { field: { Name: "Name" } }
           }
         ]
@@ -88,7 +96,7 @@ try {
 async create(studentData) {
     try {
       const params = {
-        records: [{
+records: [{
           Name: studentData.Name || `${studentData.first_name_c} ${studentData.last_name_c}`,
           Tags: studentData.Tags || "",
           Owner: parseInt(studentData.Owner) || null,
@@ -99,7 +107,8 @@ async create(studentData) {
           enrollment_date_c: studentData.enrollment_date_c,
           class_ids_c: studentData.class_ids_c || "",
           status_c: studentData.status_c || "active",
-          classes_c: studentData.classes_c ? parseInt(studentData.classes_c) : null
+          classes_c: studentData.classes_c ? parseInt(studentData.classes_c) : null,
+          classes1_c: studentData.classes1_c ? parseInt(studentData.classes1_c) : null
         }]
       };
       
@@ -133,7 +142,7 @@ async create(studentData) {
 async update(id, studentData) {
     try {
       const params = {
-        records: [{
+records: [{
           Id: id,
           Name: studentData.Name || `${studentData.first_name_c} ${studentData.last_name_c}`,
           Tags: studentData.Tags,
@@ -145,7 +154,8 @@ async update(id, studentData) {
           enrollment_date_c: studentData.enrollment_date_c,
           class_ids_c: studentData.class_ids_c,
           status_c: studentData.status_c,
-          classes_c: studentData.classes_c ? parseInt(studentData.classes_c) : null
+          classes_c: studentData.classes_c ? parseInt(studentData.classes_c) : null,
+          classes1_c: studentData.classes1_c ? parseInt(studentData.classes1_c) : null
         }]
       };
       
