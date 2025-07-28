@@ -15,9 +15,9 @@ export const useNotifications = () => {
 
 export const NotificationProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
-  const [unreadCount, setUnreadCount] = useState(0);
+const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(true);
-
+  const [serviceError, setServiceError] = useState(false);
   useEffect(() => {
     loadNotifications();
     
@@ -31,56 +31,79 @@ export const NotificationProvider = ({ children }) => {
   }, []);
 
   const loadNotifications = async () => {
-    try {
+try {
       const allNotifications = await notificationService.getAll();
       const unread = allNotifications.filter(n => !n.read);
       
       setNotifications(allNotifications);
       setUnreadCount(unread.length);
+      setServiceError(false);
     } catch (error) {
       console.error('Error loading notifications:', error);
+      setServiceError(true);
     } finally {
       setLoading(false);
     }
   };
 
   const checkDueAssignments = async () => {
-    try {
+try {
+      // Only check due assignments if the service is available
+      if (!navigator.onLine) {
+        console.warn('Offline - skipping assignment due check');
+        return;
+      }
+
       const dueSoon = await assignmentService.checkDueSoon(3); // Check 3 days ahead
       const today = new Date().toDateString();
       
+      // If no assignments returned (possibly due to network issues), fail gracefully
+      if (!Array.isArray(dueSoon)) {
+        console.warn('Assignment service returned invalid data');
+        return;
+      }
+      
       for (const assignment of dueSoon) {
-        // Check if we already have a notification for this assignment today
-        const existingNotification = notifications.find(n => 
-          n.type === 'assignment_due' && 
-          n.assignmentId === assignment.Id &&
-          new Date(n.createdAt).toDateString() === today
-        );
-        
-        if (!existingNotification) {
-          const dueDate = new Date(assignment.dueDate);
-          const daysUntilDue = Math.ceil((dueDate - new Date()) / (1000 * 60 * 60 * 24));
+        try {
+          // Check if we already have a notification for this assignment today
+          const existingNotification = notifications.find(n => 
+            n.type === 'assignment_due' && 
+            n.assignmentId === assignment.Id &&
+            new Date(n.createdAt).toDateString() === today
+          );
           
-          let message;
-          if (daysUntilDue === 0) {
-            message = `Assignment "${assignment.name}" is due today!`;
-          } else if (daysUntilDue === 1) {
-            message = `Assignment "${assignment.name}" is due tomorrow!`;
-          } else {
-            message = `Assignment "${assignment.name}" is due in ${daysUntilDue} days.`;
+          if (!existingNotification) {
+            const dueDate = new Date(assignment.due_date_c || assignment.dueDate);
+            const daysUntilDue = Math.ceil((dueDate - new Date()) / (1000 * 60 * 60 * 24));
+            
+            let message;
+            if (daysUntilDue === 0) {
+              message = `Assignment "${assignment.Name || assignment.name}" is due today!`;
+            } else if (daysUntilDue === 1) {
+              message = `Assignment "${assignment.Name || assignment.name}" is due tomorrow!`;
+            } else {
+              message = `Assignment "${assignment.Name || assignment.name}" is due in ${daysUntilDue} days.`;
+            }
+            
+            await addNotification({
+              type: 'assignment_due',
+              title: 'Assignment Due Soon',
+              message,
+              assignmentId: assignment.Id,
+              priority: daysUntilDue <= 1 ? 'high' : 'medium'
+            });
           }
-          
-          await addNotification({
-            type: 'assignment_due',
-            title: 'Assignment Due Soon',
-            message,
-            assignmentId: assignment.Id,
-            priority: daysUntilDue <= 1 ? 'high' : 'medium'
-          });
+        } catch (notificationError) {
+          console.error('Error processing assignment notification:', notificationError);
+          // Continue with other assignments even if one fails
         }
       }
     } catch (error) {
-      console.error('Error checking due assignments:', error);
+      if (error.message?.includes('network') || error.message?.includes('Network')) {
+        console.warn('Network error checking due assignments - will retry later');
+      } else {
+        console.error('Error checking due assignments:', error);
+      }
     }
   };
 
@@ -144,10 +167,11 @@ export const NotificationProvider = ({ children }) => {
     }
   };
 
-  const value = {
+const value = {
     notifications,
     unreadCount,
     loading,
+    serviceError,
     addNotification,
     markAsRead,
     markAllAsRead,
