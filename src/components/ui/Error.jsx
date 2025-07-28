@@ -5,8 +5,8 @@ import Card from "@/components/atoms/Card";
 import ApperIcon from "@/components/ApperIcon";
 
 const Error = ({ 
-  title = "Something went wrong",
-  message = "We encountered an error while loading your data. Please try again.",
+  title = "Connection Problem",
+  message = "We're having trouble connecting to our services. Please check your internet connection and try again.",
   onRetry,
   className 
 }) => {

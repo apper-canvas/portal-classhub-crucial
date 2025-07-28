@@ -22,69 +22,104 @@ function AppContent() {
   const dispatch = useDispatch();
   const [isInitialized, setIsInitialized] = useState(false);
 
-  useEffect(() => {
-    const { ApperClient, ApperUI } = window.ApperSDK;
-    
-    const client = new ApperClient({
-      apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
-      apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
-    });
-    
-    ApperUI.setup(client, {
-      target: '#authentication',
-      clientId: import.meta.env.VITE_APPER_PROJECT_ID,
-      view: 'both',
-      onSuccess: function (user) {
-        setIsInitialized(true);
-        let currentPath = window.location.pathname + window.location.search;
-        let redirectPath = new URLSearchParams(window.location.search).get('redirect');
-        const isAuthPage = currentPath.includes('/login') || currentPath.includes('/signup') || 
-                           currentPath.includes('/callback') || currentPath.includes('/error') || 
-                           currentPath.includes('/prompt-password') || currentPath.includes('/reset-password');
-        
-        if (user) {
-          if (redirectPath) {
-            navigate(redirectPath);
-          } else if (!isAuthPage) {
-            if (!currentPath.includes('/login') && !currentPath.includes('/signup')) {
-              navigate(currentPath);
-            } else {
-              navigate('/');
-            }
-          } else {
-            navigate('/');
+useEffect(() => {
+    const initializeApperSDK = async () => {
+      try {
+        // Check if ApperSDK is loaded
+        if (!window.ApperSDK) {
+          console.log("Waiting for Apper SDK to load...");
+          
+          // Wait for SDK to load with timeout
+          let attempts = 0;
+          const maxAttempts = 50; // 10 seconds total (50 * 200ms)
+          
+          while (!window.ApperSDK && attempts < maxAttempts) {
+            await new Promise(resolve => setTimeout(resolve, 200));
+            attempts++;
           }
-          dispatch(setUser(JSON.parse(JSON.stringify(user))));
-        } else {
-          if (!isAuthPage) {
-            navigate(
-              currentPath.includes('/signup')
-                ? `/signup?redirect=${currentPath}`
-                : currentPath.includes('/login')
-                ? `/login?redirect=${currentPath}`
-                : '/login'
-            );
-          } else if (redirectPath) {
-            if (
-              !['error', 'signup', 'login', 'callback', 'prompt-password', 'reset-password'].some((path) => currentPath.includes(path))
-            ) {
-              navigate(`/login?redirect=${redirectPath}`);
-            } else {
-              navigate(currentPath);
-            }
-          } else if (isAuthPage) {
-            navigate(currentPath);
-          } else {
-            navigate('/login');
+          
+          if (!window.ApperSDK) {
+            throw new Error("Apper SDK failed to load. Please check your internet connection and refresh the page.");
           }
-          dispatch(clearUser());
         }
-      },
-      onError: function(error) {
-        console.error("Authentication failed:", error);
+        
+        const { ApperClient, ApperUI } = window.ApperSDK;
+        
+        // Check if we have network connectivity
+        if (!navigator.onLine) {
+          throw new Error("No internet connection. Please check your network and try again.");
+        }
+        
+        const client = new ApperClient({
+          apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+          apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+        });
+        
+        ApperUI.setup(client, {
+          target: '#authentication',
+          clientId: import.meta.env.VITE_APPER_PROJECT_ID,
+          view: 'both',
+          onSuccess: function (user) {
+            setIsInitialized(true);
+            let currentPath = window.location.pathname + window.location.search;
+            let redirectPath = new URLSearchParams(window.location.search).get('redirect');
+            const isAuthPage = currentPath.includes('/login') || currentPath.includes('/signup') || 
+                               currentPath.includes('/callback') || currentPath.includes('/error') || 
+                               currentPath.includes('/prompt-password') || currentPath.includes('/reset-password');
+            
+            if (user) {
+              if (redirectPath) {
+                navigate(redirectPath);
+              } else if (!isAuthPage) {
+                if (!currentPath.includes('/login') && !currentPath.includes('/signup')) {
+                  navigate(currentPath);
+                } else {
+                  navigate('/');
+                }
+              } else {
+                navigate('/');
+              }
+              dispatch(setUser(JSON.parse(JSON.stringify(user))));
+            } else {
+              if (!isAuthPage) {
+                navigate(
+                  currentPath.includes('/signup')
+                    ? `/signup?redirect=${currentPath}`
+                    : currentPath.includes('/login')
+                    ? `/login?redirect=${currentPath}`
+                    : '/login'
+                );
+              } else if (redirectPath) {
+                if (
+                  !['error', 'signup', 'login', 'callback', 'prompt-password', 'reset-password'].some((path) => currentPath.includes(path))
+                ) {
+                  navigate(`/login?redirect=${redirectPath}`);
+                } else {
+                  navigate(currentPath);
+                }
+              } else if (isAuthPage) {
+                navigate(currentPath);
+              } else {
+                navigate('/login');
+              }
+              dispatch(clearUser());
+            }
+          },
+          onError: function(error) {
+            console.error("Authentication failed:", error);
+            setIsInitialized(true);
+          }
+        });
+        
+      } catch (error) {
+        console.error("SDK initialization failed:", error);
         setIsInitialized(true);
+        // You could also show a toast error here
+        // toast.error(error.message);
       }
-    });
+    };
+    
+    initializeApperSDK();
   }, [navigate, dispatch]);
 
   const authMethods = {
