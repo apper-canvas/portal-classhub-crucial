@@ -8,8 +8,13 @@ class AttendanceService {
     this.tableName = 'attendance_c';
   }
 
-  async getAll() {
+async getAll() {
     try {
+      if (!navigator.onLine) {
+        console.error("Network error fetching attendance - no internet connection");
+        return [];
+      }
+
       const params = {
         fields: [
           { field: { Name: "Name" } },
@@ -25,23 +30,30 @@ class AttendanceService {
       const response = await this.apperClient.fetchRecords(this.tableName, params);
       
       if (!response.success) {
-        console.error(response.message);
+        console.error("Attendance API error:", response.message);
         return [];
       }
       
       return response.data || [];
     } catch (error) {
-      if (error?.response?.data?.message) {
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        console.error("Network error fetching attendance - please check your internet connection");
+      } else if (error?.response?.data?.message) {
         console.error("Error fetching attendance:", error?.response?.data?.message);
       } else {
-        console.error(error.message);
+        console.error("Attendance service error:", error.message || 'Unknown error');
       }
       return [];
     }
   }
 
   async getById(id) {
-    try {
+try {
+      if (!navigator.onLine) {
+        console.error(`Network error fetching attendance ${id} - no internet connection`);
+        return null;
+      }
+
       const params = {
         fields: [
           { field: { Name: "Name" } },
@@ -57,23 +69,30 @@ class AttendanceService {
       const response = await this.apperClient.getRecordById(this.tableName, id, params);
       
       if (!response.success) {
-        console.error(response.message);
+        console.error("Attendance API error:", response.message);
         return null;
       }
       
       return response.data;
     } catch (error) {
-      if (error?.response?.data?.message) {
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        console.error(`Network error fetching attendance ${id} - please check your internet connection`);
+      } else if (error?.response?.data?.message) {
         console.error(`Error fetching attendance with ID ${id}:`, error?.response?.data?.message);
       } else {
-        console.error(error.message);
+        console.error(`Attendance service error for ID ${id}:`, error.message || 'Unknown error');
       }
       return null;
     }
   }
 
   async getByStudentId(studentId) {
-    try {
+try {
+      if (!navigator.onLine) {
+        console.error("Network error fetching attendance by student - no internet connection");
+        return [];
+      }
+
       const params = {
         fields: [
           { field: { Name: "Name" } },
@@ -96,23 +115,30 @@ class AttendanceService {
       const response = await this.apperClient.fetchRecords(this.tableName, params);
       
       if (!response.success) {
-        console.error(response.message);
+        console.error("Attendance API error:", response.message);
         return [];
       }
       
       return response.data || [];
     } catch (error) {
-      if (error?.response?.data?.message) {
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        console.error("Network error fetching attendance by student - please check your internet connection");
+      } else if (error?.response?.data?.message) {
         console.error("Error fetching attendance by student:", error?.response?.data?.message);
       } else {
-        console.error(error.message);
+        console.error("Attendance service error by student:", error.message || 'Unknown error');
       }
       return [];
     }
   }
 
-  async getByClassId(classId) {
+async getByClassId(classId) {
     try {
+      if (!navigator.onLine) {
+        console.error("Network error fetching attendance by class - no internet connection");
+        return [];
+      }
+
       const params = {
         fields: [
           { field: { Name: "Name" } },
@@ -135,23 +161,30 @@ class AttendanceService {
       const response = await this.apperClient.fetchRecords(this.tableName, params);
       
       if (!response.success) {
-        console.error(response.message);
+        console.error("Attendance API error:", response.message);
         return [];
       }
       
       return response.data || [];
     } catch (error) {
-      if (error?.response?.data?.message) {
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        console.error("Network error fetching attendance by class - please check your internet connection");
+      } else if (error?.response?.data?.message) {
         console.error("Error fetching attendance by class:", error?.response?.data?.message);
       } else {
-        console.error(error.message);
+        console.error("Attendance service error by class:", error.message || 'Unknown error');
       }
       return [];
     }
   }
 
   async getByDate(date) {
-    try {
+try {
+      if (!navigator.onLine) {
+        console.error("Network error fetching attendance by date - no internet connection");
+        return [];
+      }
+
       const params = {
         fields: [
           { field: { Name: "Name" } },
@@ -174,25 +207,32 @@ class AttendanceService {
       const response = await this.apperClient.fetchRecords(this.tableName, params);
       
       if (!response.success) {
-        console.error(response.message);
+        console.error("Attendance API error:", response.message);
         return [];
       }
       
       return response.data || [];
     } catch (error) {
-      if (error?.response?.data?.message) {
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        console.error("Network error fetching attendance by date - please check your internet connection");
+      } else if (error?.response?.data?.message) {
         console.error("Error fetching attendance by date:", error?.response?.data?.message);
       } else {
-        console.error(error.message);
+        console.error("Attendance service error by date:", error.message || 'Unknown error');
       }
       return [];
     }
   }
 
   async create(attendanceData) {
-    try {
+try {
+      if (!navigator.onLine) {
+        console.error("Network error creating attendance - no internet connection");
+        throw new Error('Network error - please check your internet connection and try again');
+      }
+
       const params = {
-records: [{
+        records: [{
           Name: attendanceData.Name || `Attendance for ${attendanceData.date_c || attendanceData.date}`,
           Tags: attendanceData.Tags || "",
           Owner: attendanceData.Owner ? parseInt(attendanceData.Owner) || null : null,
@@ -208,8 +248,8 @@ records: [{
       const response = await this.apperClient.createRecord(this.tableName, params);
       
       if (!response.success) {
-        console.error(response.message);
-        return null;
+        console.error("Attendance API error:", response.message);
+        throw new Error(response.message || 'Failed to create attendance');
       }
       
       if (response.results) {
@@ -223,20 +263,29 @@ records: [{
         return successfulRecords.length > 0 ? successfulRecords[0].data : null;
       }
     } catch (error) {
-      if (error?.response?.data?.message) {
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        console.error("Network error creating attendance - please check your internet connection");
+        throw new Error('Network error - please check your internet connection and try again');
+      } else if (error?.response?.data?.message) {
         console.error("Error creating attendance:", error?.response?.data?.message);
+        throw error;
       } else {
-        console.error(error.message);
+        console.error("Attendance service create error:", error.message || 'Unknown error');
+        throw error;
       }
-      return null;
     }
   }
 
-  async update(id, attendanceData) {
+async update(id, attendanceData) {
     try {
+      if (!navigator.onLine) {
+        console.error("Network error updating attendance - no internet connection");
+        throw new Error('Network error - please check your internet connection and try again');
+      }
+
       const params = {
         records: [{
-Id: id,
+          Id: id,
           Name: attendanceData.Name || `Attendance for ${attendanceData.date_c || attendanceData.date}`,
           Tags: attendanceData.Tags,
           Owner: attendanceData.Owner ? parseInt(attendanceData.Owner) || null : null,
@@ -252,8 +301,8 @@ Id: id,
       const response = await this.apperClient.updateRecord(this.tableName, params);
       
       if (!response.success) {
-        console.error(response.message);
-        return null;
+        console.error("Attendance API error:", response.message);
+        throw new Error(response.message || 'Failed to update attendance');
       }
       
       if (response.results) {
@@ -267,17 +316,26 @@ Id: id,
         return successfulUpdates.length > 0 ? successfulUpdates[0].data : null;
       }
     } catch (error) {
-      if (error?.response?.data?.message) {
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        console.error("Network error updating attendance - please check your internet connection");
+        throw new Error('Network error - please check your internet connection and try again');
+      } else if (error?.response?.data?.message) {
         console.error("Error updating attendance:", error?.response?.data?.message);
+        throw error;
       } else {
-        console.error(error.message);
+        console.error("Attendance service update error:", error.message || 'Unknown error');
+        throw error;
       }
-      return null;
     }
   }
 
-  async delete(id) {
+async delete(id) {
     try {
+      if (!navigator.onLine) {
+        console.error("Network error deleting attendance - no internet connection");
+        throw new Error('Network error - please check your internet connection and try again');
+      }
+
       const params = {
         RecordIds: [id]
       };
@@ -285,8 +343,8 @@ Id: id,
       const response = await this.apperClient.deleteRecord(this.tableName, params);
       
       if (!response.success) {
-        console.error(response.message);
-        return false;
+        console.error("Attendance API error:", response.message);
+        throw new Error(response.message || 'Failed to delete attendance');
       }
       
       if (response.results) {
@@ -301,12 +359,16 @@ Id: id,
       
       return true;
     } catch (error) {
-      if (error?.response?.data?.message) {
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        console.error("Network error deleting attendance - please check your internet connection");
+        throw new Error('Network error - please check your internet connection and try again');
+      } else if (error?.response?.data?.message) {
         console.error("Error deleting attendance:", error?.response?.data?.message);
+        throw error;
       } else {
-        console.error(error.message);
+        console.error("Attendance service delete error:", error.message || 'Unknown error');
+        throw error;
       }
-      return false;
     }
   }
 }

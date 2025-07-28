@@ -8,8 +8,13 @@ class GradeService {
     this.tableName = 'grade_c';
   }
 
-  async getAll() {
+async getAll() {
     try {
+      if (!navigator.onLine) {
+        console.error("Network error fetching grades - no internet connection");
+        return [];
+      }
+
       const params = {
         fields: [
           { field: { Name: "Name" } },
@@ -25,23 +30,30 @@ class GradeService {
       const response = await this.apperClient.fetchRecords(this.tableName, params);
       
       if (!response.success) {
-        console.error(response.message);
+        console.error("Grade API error:", response.message);
         return [];
       }
       
       return response.data || [];
     } catch (error) {
-      if (error?.response?.data?.message) {
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        console.error("Network error fetching grades - please check your internet connection");
+      } else if (error?.response?.data?.message) {
         console.error("Error fetching grades:", error?.response?.data?.message);
       } else {
-        console.error(error.message);
+        console.error("Grade service error:", error.message || 'Unknown error');
       }
       return [];
     }
   }
 
   async getById(id) {
-    try {
+try {
+      if (!navigator.onLine) {
+        console.error(`Network error fetching grade ${id} - no internet connection`);
+        return null;
+      }
+
       const params = {
         fields: [
           { field: { Name: "Name" } },
@@ -57,23 +69,30 @@ class GradeService {
       const response = await this.apperClient.getRecordById(this.tableName, id, params);
       
       if (!response.success) {
-        console.error(response.message);
+        console.error("Grade API error:", response.message);
         return null;
       }
       
       return response.data;
     } catch (error) {
-      if (error?.response?.data?.message) {
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        console.error(`Network error fetching grade ${id} - please check your internet connection`);
+      } else if (error?.response?.data?.message) {
         console.error(`Error fetching grade with ID ${id}:`, error?.response?.data?.message);
       } else {
-        console.error(error.message);
+        console.error(`Grade service error for ID ${id}:`, error.message || 'Unknown error');
       }
       return null;
     }
   }
 
   async getByStudentId(studentId) {
-    try {
+try {
+      if (!navigator.onLine) {
+        console.error("Network error fetching grades by student - no internet connection");
+        return [];
+      }
+
       const params = {
         fields: [
           { field: { Name: "Name" } },
@@ -96,23 +115,30 @@ class GradeService {
       const response = await this.apperClient.fetchRecords(this.tableName, params);
       
       if (!response.success) {
-        console.error(response.message);
+        console.error("Grade API error:", response.message);
         return [];
       }
       
       return response.data || [];
     } catch (error) {
-      if (error?.response?.data?.message) {
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        console.error("Network error fetching grades by student - please check your internet connection");
+      } else if (error?.response?.data?.message) {
         console.error("Error fetching grades by student:", error?.response?.data?.message);
       } else {
-        console.error(error.message);
+        console.error("Grade service error by student:", error.message || 'Unknown error');
       }
       return [];
     }
   }
 
-  async getByAssignmentId(assignmentId) {
+async getByAssignmentId(assignmentId) {
     try {
+      if (!navigator.onLine) {
+        console.error("Network error fetching grades by assignment - no internet connection");
+        return [];
+      }
+
       const params = {
         fields: [
           { field: { Name: "Name" } },
@@ -135,25 +161,32 @@ class GradeService {
       const response = await this.apperClient.fetchRecords(this.tableName, params);
       
       if (!response.success) {
-        console.error(response.message);
+        console.error("Grade API error:", response.message);
         return [];
       }
       
       return response.data || [];
     } catch (error) {
-      if (error?.response?.data?.message) {
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        console.error("Network error fetching grades by assignment - please check your internet connection");
+      } else if (error?.response?.data?.message) {
         console.error("Error fetching grades by assignment:", error?.response?.data?.message);
       } else {
-        console.error(error.message);
+        console.error("Grade service error by assignment:", error.message || 'Unknown error');
       }
       return [];
     }
   }
 
   async create(gradeData) {
-    try {
+try {
+      if (!navigator.onLine) {
+        console.error("Network error creating grade - no internet connection");
+        throw new Error('Network error - please check your internet connection and try again');
+      }
+
       const params = {
-records: [{
+        records: [{
           Name: gradeData.Name || `Grade for Student ${gradeData.student_id_c || gradeData.studentId}`,
           Tags: gradeData.Tags || "",
           Owner: gradeData.Owner ? parseInt(gradeData.Owner) || null : null,
@@ -170,8 +203,8 @@ records: [{
       const response = await this.apperClient.createRecord(this.tableName, params);
       
       if (!response.success) {
-        console.error(response.message);
-        return null;
+        console.error("Grade API error:", response.message);
+        throw new Error(response.message || 'Failed to create grade');
       }
       
       if (response.results) {
@@ -185,19 +218,28 @@ records: [{
         return successfulRecords.length > 0 ? successfulRecords[0].data : null;
       }
     } catch (error) {
-      if (error?.response?.data?.message) {
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        console.error("Network error creating grade - please check your internet connection");
+        throw new Error('Network error - please check your internet connection and try again');
+      } else if (error?.response?.data?.message) {
         console.error("Error creating grade:", error?.response?.data?.message);
+        throw error;
       } else {
-        console.error(error.message);
+        console.error("Grade service create error:", error.message || 'Unknown error');
+        throw error;
       }
-      return null;
     }
   }
 
-  async update(id, gradeData) {
+async update(id, gradeData) {
     try {
+      if (!navigator.onLine) {
+        console.error("Network error updating grade - no internet connection");
+        throw new Error('Network error - please check your internet connection and try again');
+      }
+
       const params = {
-records: [{
+        records: [{
           Id: id,
           Name: gradeData.Name || `Grade for Student ${gradeData.student_id_c || gradeData.studentId}`,
           Tags: gradeData.Tags,
@@ -215,8 +257,8 @@ records: [{
       const response = await this.apperClient.updateRecord(this.tableName, params);
       
       if (!response.success) {
-        console.error(response.message);
-        return null;
+        console.error("Grade API error:", response.message);
+        throw new Error(response.message || 'Failed to update grade');
       }
       
       if (response.results) {
@@ -230,17 +272,26 @@ records: [{
         return successfulUpdates.length > 0 ? successfulUpdates[0].data : null;
       }
     } catch (error) {
-      if (error?.response?.data?.message) {
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        console.error("Network error updating grade - please check your internet connection");
+        throw new Error('Network error - please check your internet connection and try again');
+      } else if (error?.response?.data?.message) {
         console.error("Error updating grade:", error?.response?.data?.message);
+        throw error;
       } else {
-        console.error(error.message);
+        console.error("Grade service update error:", error.message || 'Unknown error');
+        throw error;
       }
-      return null;
     }
   }
 
   async delete(id) {
-    try {
+try {
+      if (!navigator.onLine) {
+        console.error("Network error deleting grade - no internet connection");
+        throw new Error('Network error - please check your internet connection and try again');
+      }
+
       const params = {
         RecordIds: [id]
       };
@@ -248,8 +299,8 @@ records: [{
       const response = await this.apperClient.deleteRecord(this.tableName, params);
       
       if (!response.success) {
-        console.error(response.message);
-        return false;
+        console.error("Grade API error:", response.message);
+        throw new Error(response.message || 'Failed to delete grade');
       }
       
       if (response.results) {
@@ -264,12 +315,16 @@ records: [{
       
       return true;
     } catch (error) {
-      if (error?.response?.data?.message) {
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        console.error("Network error deleting grade - please check your internet connection");
+        throw new Error('Network error - please check your internet connection and try again');
+      } else if (error?.response?.data?.message) {
         console.error("Error deleting grade:", error?.response?.data?.message);
+        throw error;
       } else {
-        console.error(error.message);
+        console.error("Grade service delete error:", error.message || 'Unknown error');
+        throw error;
       }
-      return false;
     }
   }
 }

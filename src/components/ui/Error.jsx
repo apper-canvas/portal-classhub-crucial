@@ -12,7 +12,9 @@ const Error = ({
 }) => {
   const isNetworkError = message?.toLowerCase().includes('network') || 
                         message?.toLowerCase().includes('connection') ||
-                        message?.toLowerCase().includes('fetch');
+                        message?.toLowerCase().includes('fetch') ||
+                        message?.toLowerCase().includes('unavailable') ||
+                        message?.toLowerCase().includes('timeout');
 
   const displayTitle = isNetworkError ? "Network Connection Issue" : title;
   const displayMessage = isNetworkError ? 
@@ -23,7 +25,7 @@ const Error = ({
     <Card className={cn("p-8 text-center max-w-md mx-auto", className)}>
       <div className="mb-6">
         <div className="mx-auto w-16 h-16 bg-gradient-to-br from-error/10 to-error/20 rounded-full flex items-center justify-center mb-4">
-          <ApperIcon name={isNetworkError ? "Wifi" : "AlertTriangle"} className="w-8 h-8 text-error" />
+          <ApperIcon name={isNetworkError ? "WifiOff" : "AlertTriangle"} className="w-8 h-8 text-error" />
         </div>
         <h3 className="text-xl font-semibold text-primary-900 mb-2">{displayTitle}</h3>
         <p className="text-secondary-400 leading-relaxed">{displayMessage}</p>
@@ -31,7 +33,7 @@ const Error = ({
         {isNetworkError && (
           <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
             <p className="text-sm text-amber-700">
-              💡 <strong>Troubleshooting:</strong> Check your WiFi connection, refresh the page, or contact support if issues persist.
+              💡 <strong>Troubleshooting:</strong> Check your WiFi connection, refresh the page, or try again in a few moments.
             </p>
           </div>
         )}

@@ -29,25 +29,35 @@ useEffect(() => {
         if (!window.ApperSDK) {
           console.log("Waiting for Apper SDK to load...");
           
-          // Wait for SDK to load with timeout
+          // Wait for SDK to load with comprehensive timeout and retry logic
           let attempts = 0;
-          const maxAttempts = 50; // 10 seconds total (50 * 200ms)
+          const maxAttempts = 60; // 12 seconds total (60 * 200ms)
           
           while (!window.ApperSDK && attempts < maxAttempts) {
             await new Promise(resolve => setTimeout(resolve, 200));
             attempts++;
+            
+            // Log progress every 5 seconds
+            if (attempts % 25 === 0) {
+              console.log(`Still waiting for SDK... (${attempts * 200}ms elapsed)`);
+            }
           }
           
           if (!window.ApperSDK) {
-            throw new Error("Apper SDK failed to load. Please check your internet connection and refresh the page.");
+            throw new Error("Apper SDK failed to load after timeout. Please check your internet connection and refresh the page.");
           }
+        }
+        
+        // Enhanced connectivity checks
+        if (!navigator.onLine) {
+          throw new Error("No internet connection detected. Please check your network connection and try again.");
         }
         
         const { ApperClient, ApperUI } = window.ApperSDK;
         
-        // Check if we have network connectivity
-        if (!navigator.onLine) {
-          throw new Error("No internet connection. Please check your network and try again.");
+        // Verify SDK components are available
+        if (!ApperClient || !ApperUI) {
+          throw new Error("Apper SDK components are not available. Please refresh the page and try again.");
         }
         
         const client = new ApperClient({
@@ -108,14 +118,29 @@ useEffect(() => {
           onError: function(error) {
             console.error("Authentication failed:", error);
             setIsInitialized(true);
+            // Enhanced error logging for debugging
+            if (error?.message?.includes('network') || error?.message?.includes('fetch')) {
+              console.error("Network-related authentication error - check connectivity");
+            }
           }
         });
+        
+        console.log("Apper SDK initialized successfully");
         
       } catch (error) {
         console.error("SDK initialization failed:", error);
         setIsInitialized(true);
-        // You could also show a toast error here
-        // toast.error(error.message);
+        
+        // Enhanced error categorization
+        if (error.message.includes('timeout') || error.message.includes('failed to load')) {
+          console.error("SDK loading timeout - likely network connectivity issue");
+        } else if (error.message.includes('components are not available')) {
+          console.error("SDK partially loaded but components missing - try refreshing");
+        } else if (error.message.includes('No internet connection')) {
+          console.error("Network connectivity issue detected");
+        } else {
+          console.error("Unknown SDK initialization error:", error.message);
+        }
       }
     };
     

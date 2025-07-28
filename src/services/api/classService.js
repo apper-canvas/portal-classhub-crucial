@@ -14,9 +14,14 @@ class ClassService {
     this.tableName = 'class_c';
   }
 
-  async getAll() {
+async getAll() {
     try {
-const params = {
+      if (!navigator.onLine) {
+        console.error("Network error fetching classes - no internet connection");
+        return [];
+      }
+
+      const params = {
         fields: [
           { field: { Name: "Name" } },
           { field: { Name: "Tags" } },
@@ -32,24 +37,31 @@ const params = {
       const response = await this.apperClient.fetchRecords(this.tableName, params);
       
       if (!response.success) {
-        console.error(response.message);
+        console.error("Class API error:", response.message);
         return [];
       }
       
       return response.data || [];
     } catch (error) {
-      if (error?.response?.data?.message) {
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        console.error("Network error fetching classes - please check your internet connection");
+      } else if (error?.response?.data?.message) {
         console.error("Error fetching classes:", error?.response?.data?.message);
       } else {
-        console.error(error.message);
+        console.error("Class service error:", error.message || 'Unknown error');
       }
       return [];
     }
   }
 
   async getById(id) {
-    try {
-const params = {
+try {
+      if (!navigator.onLine) {
+        console.error(`Network error fetching class ${id} - no internet connection`);
+        return null;
+      }
+
+      const params = {
         fields: [
           { field: { Name: "Name" } },
           { field: { Name: "Tags" } },
@@ -65,16 +77,18 @@ const params = {
       const response = await this.apperClient.getRecordById(this.tableName, id, params);
       
       if (!response.success) {
-        console.error(response.message);
+        console.error("Class API error:", response.message);
         return null;
       }
       
       return response.data;
     } catch (error) {
-      if (error?.response?.data?.message) {
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        console.error(`Network error fetching class ${id} - please check your internet connection`);
+      } else if (error?.response?.data?.message) {
         console.error(`Error fetching class with ID ${id}:`, error?.response?.data?.message);
       } else {
-        console.error(error.message);
+        console.error(`Class service error for ID ${id}:`, error.message || 'Unknown error');
       }
       return null;
     }
@@ -82,7 +96,12 @@ const params = {
 
 async create(classData) {
     try {
-const params = {
+      if (!navigator.onLine) {
+        console.error("Network error creating class - no internet connection");
+        throw new Error('Network error - please check your internet connection and try again');
+      }
+
+      const params = {
         records: [{
           Name: classData.Name,
           Tags: classData.Tags || "",
@@ -98,8 +117,8 @@ const params = {
       const response = await this.apperClient.createRecord(this.tableName, params);
       
       if (!response.success) {
-        console.error(response.message);
-        return null;
+        console.error("Class API error:", response.message);
+        throw new Error(response.message || 'Failed to create class');
       }
       
       if (response.results) {
@@ -113,19 +132,28 @@ const params = {
         return successfulRecords.length > 0 ? successfulRecords[0].data : null;
       }
     } catch (error) {
-      if (error?.response?.data?.message) {
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        console.error("Network error creating class - please check your internet connection");
+        throw new Error('Network error - please check your internet connection and try again');
+      } else if (error?.response?.data?.message) {
         console.error("Error creating class:", error?.response?.data?.message);
+        throw error;
       } else {
-        console.error(error.message);
+        console.error("Class service create error:", error.message || 'Unknown error');
+        throw error;
       }
-      return null;
     }
   }
 
-  async update(id, classData) {
+async update(id, classData) {
     try {
-const params = {
-records: [{
+      if (!navigator.onLine) {
+        console.error("Network error updating class - no internet connection");
+        throw new Error('Network error - please check your internet connection and try again');
+      }
+
+      const params = {
+        records: [{
           Id: id,
           Name: classData.Name,
           Tags: classData.Tags,
@@ -141,8 +169,8 @@ records: [{
       const response = await this.apperClient.updateRecord(this.tableName, params);
       
       if (!response.success) {
-        console.error(response.message);
-        return null;
+        console.error("Class API error:", response.message);
+        throw new Error(response.message || 'Failed to update class');
       }
       
       if (response.results) {
@@ -156,17 +184,26 @@ records: [{
         return successfulUpdates.length > 0 ? successfulUpdates[0].data : null;
       }
     } catch (error) {
-      if (error?.response?.data?.message) {
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        console.error("Network error updating class - please check your internet connection");
+        throw new Error('Network error - please check your internet connection and try again');
+      } else if (error?.response?.data?.message) {
         console.error("Error updating class:", error?.response?.data?.message);
+        throw error;
       } else {
-        console.error(error.message);
+        console.error("Class service update error:", error.message || 'Unknown error');
+        throw error;
       }
-      return null;
     }
   }
 
-  async delete(id) {
+async delete(id) {
     try {
+      if (!navigator.onLine) {
+        console.error("Network error deleting class - no internet connection");
+        throw new Error('Network error - please check your internet connection and try again');
+      }
+
       const params = {
         RecordIds: [id]
       };
@@ -174,8 +211,8 @@ records: [{
       const response = await this.apperClient.deleteRecord(this.tableName, params);
       
       if (!response.success) {
-        console.error(response.message);
-        return false;
+        console.error("Class API error:", response.message);
+        throw new Error(response.message || 'Failed to delete class');
       }
       
       if (response.results) {
@@ -190,12 +227,16 @@ records: [{
       
       return true;
     } catch (error) {
-      if (error?.response?.data?.message) {
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        console.error("Network error deleting class - please check your internet connection");
+        throw new Error('Network error - please check your internet connection and try again');
+      } else if (error?.response?.data?.message) {
         console.error("Error deleting class:", error?.response?.data?.message);
+        throw error;
       } else {
-        console.error(error.message);
+        console.error("Class service delete error:", error.message || 'Unknown error');
+        throw error;
       }
-      return false;
     }
   }
 }
