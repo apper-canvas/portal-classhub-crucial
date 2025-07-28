@@ -10,8 +10,8 @@ class StudentService {
 
   async getAll() {
 try {
-      if (!navigator.onLine) {
-        console.error("Network error fetching students - no internet connection");
+if (!navigator.onLine) {
+        console.error("Network error fetching students - device is offline");
         return [];
       }
 
@@ -59,19 +59,19 @@ try {
       
       const response = await this.apperClient.fetchRecords(this.tableName, params);
       
-      if (!response.success) {
-        console.error("Student API error:", response.message);
+if (!response.success) {
+        console.error("Student service API error:", response.message);
         return [];
       }
       
       return response.data || [];
-    } catch (error) {
+} catch (error) {
       if (error.name === 'TypeError' && error.message.includes('fetch')) {
-        console.error("Network error fetching students - please check your internet connection");
+        console.error("Student service network error: Unable to connect to server - please check your internet connection");
       } else if (error?.response?.data?.message) {
-        console.error("Error fetching students:", error?.response?.data?.message);
+        console.error("Student service API error:", error?.response?.data?.message);
       } else {
-        console.error("Student service error:", error.message || 'Unknown error');
+        console.error("Student service error:", error.message || 'Unknown error occurred');
       }
       return [];
     }
@@ -80,10 +80,9 @@ try {
   async getById(id) {
 try {
       if (!navigator.onLine) {
-        console.error(`Network error fetching student ${id} - no internet connection`);
+console.error(`Student service network error: Device is offline - cannot fetch student ${id}`);
         return null;
       }
-
       const params = {
         fields: [
           { field: { Name: "Name" } },
@@ -128,28 +127,28 @@ try {
       
       const response = await this.apperClient.getRecordById(this.tableName, id, params);
       
-      if (!response.success) {
-        console.error("Student API error:", response.message);
+if (!response.success) {
+        console.error("Student service API error:", response.message);
         return null;
       }
       
       return response.data;
-    } catch (error) {
+} catch (error) {
       if (error.name === 'TypeError' && error.message.includes('fetch')) {
-        console.error(`Network error fetching student ${id} - please check your internet connection`);
+        console.error(`Student service network error: Unable to connect to server for student ${id} - please check your internet connection`);
       } else if (error?.response?.data?.message) {
-        console.error(`Error fetching student with ID ${id}:`, error?.response?.data?.message);
+        console.error(`Student service API error for student ${id}:`, error?.response?.data?.message);
       } else {
-        console.error(`Student service error for ID ${id}:`, error.message || 'Unknown error');
+        console.error(`Student service error for student ${id}:`, error.message || 'Unknown error occurred');
       }
       return null;
     }
   }
 async create(studentData) {
     try {
-      if (!navigator.onLine) {
-        console.error("Network error creating student - no internet connection");
-        throw new Error('Network error - please check your internet connection and try again');
+if (!navigator.onLine) {
+        console.error("Student service network error: Device is offline - cannot create student");
+        throw new Error('Network error - device is offline. Please check your internet connection and try again');
       }
 
       const params = {
@@ -193,15 +192,15 @@ async create(studentData) {
         
         return successfulRecords.length > 0 ? successfulRecords[0].data : null;
       }
-    } catch (error) {
+} catch (error) {
       if (error.name === 'TypeError' && error.message.includes('fetch')) {
-        console.error("Network error creating student - please check your internet connection");
-        throw new Error('Network error - please check your internet connection and try again');
+        console.error("Student service network error: Unable to connect to server for creating student");
+        throw new Error('Network error - unable to connect to server. Please check your internet connection and try again');
       } else if (error?.response?.data?.message) {
-        console.error("Error creating student:", error?.response?.data?.message);
+        console.error("Student service API error creating student:", error?.response?.data?.message);
         throw error;
       } else {
-        console.error("Student service create error:", error.message || 'Unknown error');
+        console.error("Student service create error:", error.message || 'Unknown error occurred');
         throw error;
       }
     }
@@ -209,9 +208,9 @@ async create(studentData) {
 
 async update(id, studentData) {
     try {
-      if (!navigator.onLine) {
-        console.error("Network error updating student - no internet connection");
-        throw new Error('Network error - please check your internet connection and try again');
+if (!navigator.onLine) {
+        console.error("Student service network error: Device is offline - cannot update student");
+        throw new Error('Network error - device is offline. Please check your internet connection and try again');
       }
 
       const params = {
@@ -256,15 +255,15 @@ async update(id, studentData) {
         
         return successfulUpdates.length > 0 ? successfulUpdates[0].data : null;
       }
-    } catch (error) {
+} catch (error) {
       if (error.name === 'TypeError' && error.message.includes('fetch')) {
-        console.error("Network error updating student - please check your internet connection");
-        throw new Error('Network error - please check your internet connection and try again');
+        console.error("Student service network error: Unable to connect to server for updating student");
+        throw new Error('Network error - unable to connect to server. Please check your internet connection and try again');
       } else if (error?.response?.data?.message) {
-        console.error("Error updating student:", error?.response?.data?.message);
+        console.error("Student service API error updating student:", error?.response?.data?.message);
         throw error;
       } else {
-        console.error("Student service update error:", error.message || 'Unknown error');
+        console.error("Student service update error:", error.message || 'Unknown error occurred');
         throw error;
       }
     }
@@ -272,9 +271,9 @@ async update(id, studentData) {
 
 async delete(id) {
     try {
-      if (!navigator.onLine) {
-        console.error("Network error deleting student - no internet connection");
-        throw new Error('Network error - please check your internet connection and try again');
+if (!navigator.onLine) {
+        console.error("Student service network error: Device is offline - cannot delete student");
+        throw new Error('Network error - device is offline. Please check your internet connection and try again');
       }
 
       const params = {
@@ -299,24 +298,24 @@ async delete(id) {
       }
       
       return true;
-    } catch (error) {
+} catch (error) {
       if (error.name === 'TypeError' && error.message.includes('fetch')) {
-        console.error("Network error deleting student - please check your internet connection");
-        throw new Error('Network error - please check your internet connection and try again');
+        console.error("Student service network error: Unable to connect to server for deleting student");
+        throw new Error('Network error - unable to connect to server. Please check your internet connection and try again');
       } else if (error?.response?.data?.message) {
-        console.error("Error deleting student:", error?.response?.data?.message);
+        console.error("Student service API error deleting student:", error?.response?.data?.message);
         throw error;
       } else {
-        console.error("Student service delete error:", error.message || 'Unknown error');
-throw error;
+        console.error("Student service delete error:", error.message || 'Unknown error occurred');
+        throw error;
       }
     }
   }
 
   async getByClassId(classId) {
     try {
-      if (!navigator.onLine) {
-        console.error("Network error fetching students by class - no internet connection");
+if (!navigator.onLine) {
+        console.error("Student service network error: Device is offline - cannot fetch students by class");
         return [];
       }
 
@@ -344,19 +343,19 @@ throw error;
       
       const response = await this.apperClient.fetchRecords(this.tableName, params);
       
-      if (!response.success) {
-        console.error("Student API error:", response.message);
+if (!response.success) {
+        console.error("Student service API error:", response.message);
         return [];
       }
       
       return response.data || [];
-    } catch (error) {
+} catch (error) {
       if (error.name === 'TypeError' && error.message.includes('fetch')) {
-        console.error("Network error fetching students by class - please check your internet connection");
+        console.error("Student service network error: Unable to connect to server for fetching students by class");
       } else if (error?.response?.data?.message) {
-        console.error("Error fetching students by class:", error?.response?.data?.message);
+        console.error("Student service API error fetching students by class:", error?.response?.data?.message);
       } else {
-        console.error("Student service error by class:", error.message || 'Unknown error');
+        console.error("Student service error fetching students by class:", error.message || 'Unknown error occurred');
       }
       return [];
     }

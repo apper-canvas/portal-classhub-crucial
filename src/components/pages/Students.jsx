@@ -51,7 +51,7 @@ const loadStudents = async () => {
       
       setStudents(mappedData);
     } catch (err) {
-      setError(err.message);
+setError(err.message || 'Unable to load students. Please try again.');
       console.error("Error loading students:", err);
     } finally {
       setLoading(false);
@@ -129,8 +129,9 @@ case "status":
       await studentService.delete(studentId);
       setStudents(prev => prev.filter(s => s.Id !== studentId));
       toast.success("Student deleted successfully");
-    } catch (error) {
-      toast.error("Error deleting student");
+} catch (error) {
+      const errorMessage = error.message || "Error deleting student";
+      toast.error(errorMessage);
       console.error("Error deleting student:", error);
     }
   };
